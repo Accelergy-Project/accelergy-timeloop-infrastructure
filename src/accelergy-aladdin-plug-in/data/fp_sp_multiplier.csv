@@ -1,0 +1,8 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+1,35.3,0.12,0.3595236,4.36E+03,this is a 3 stage floating point single precision multiplier
+2,29.7,0.0594,0.3565266,3.01E+03,this is a 3 stage floating point single precision multiplier
+3,27.8,0.0494,0.44451243,2.96E+03,this is a 3 stage floating point single precision multiplier
+4,25.2,0.045,0.54034944,2.12E+03,this is a 3 stage floating point single precision multiplier
+5,24.4,0.0422,0.63237915,2.06E+03,this is a 3 stage floating point single precision multiplier
+6,24.2,0.042,0.75571938,2.06E+03,this is a 3 stage floating point single precision multiplier
+10,26.6,0.0448,1.3429701,2.06E+03,this is a 3 stage floating point single precision multiplier

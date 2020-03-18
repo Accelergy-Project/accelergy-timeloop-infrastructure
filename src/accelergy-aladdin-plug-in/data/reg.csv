@@ -1,0 +1,8 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+1,0.009,7E-05,7E-05,5.98E+00,this is a 1 stage register
+2,0.00901,7E-05,0.00015,5.98E+00,this is a 1 stage register
+3,0.00901,7E-05,0.00022,5.98E+00,this is a 1 stage register
+4,0.009,7E-05,0.0003,5.98E+00,this is a 1 stage register
+5,0.009,7E-05,0.00037,5.98E+00,this is a 1 stage register
+6,0.00901,7E-05,0.00044,5.98E+00,this is a 1 stage register
+10,0.00554,7E-05,0.00074,5.98E+00,this is a 1 stage register

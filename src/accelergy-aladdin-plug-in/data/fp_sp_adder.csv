@@ -1,0 +1,8 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+1,16.679,0.053,0.159,4.36E+03,this is a three stage single precision adder
+2,11.026,0.021,0.129,3.01E+03,this is a three stage single precision adder
+3,10.584,0.02,0.182,2.96E+03,this is a three stage single precision adder
+4,7.894,0.016,0.189,2.12E+03,this is a three stage single precision adder
+5,7.928,0.015,0.228,2.06E+03,this is a three stage single precision adder
+6,7.928,0.015,0.273,2.06E+03,this is a three stage single precision adder
+10,7.701,0.015,0.458,2.06E+03,this is a three stage single precision adder

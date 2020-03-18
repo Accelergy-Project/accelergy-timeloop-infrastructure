@@ -1,0 +1,8 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+1,0.417,0.0017,0.002,2.50E+02,this is a 1 stage shifter
+2,0.407,0.00171,0.003,2.50E+02,this is a 1 stage shifter
+3,0.422,0.00178,0.005,2.50E+02,this is a 1 stage shifter
+4,0.42,0.00173,0.007,2.50E+02,this is a 1 stage shifter
+5,0.41652,0.00169,0.008,2.50E+02,this is a 1 stage shifter
+6,0.41783,0.0017,0.01,2.50E+02,this is a 1 stage shifter
+10,0.41506,0.0017,0.017,2.50E+02,this is a 1 stage shifter

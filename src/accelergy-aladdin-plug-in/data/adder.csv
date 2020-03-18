@@ -1,0 +1,9 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+0.5,0.142,0.0033,0.0016,3.79E+02,this is a one stage adder
+1,0.21,0.0023,0.0023,2.78E+02,this is a one stage adder
+2,0.0858,0.0024,0.0048,1.79E+02,this is a one stage adder
+3,0.0859,0.0024,0.0071,1.79E+02,this is a one stage adder
+4,0.0857,0.0024,0.0095,1.79E+02,this is a one stage adder
+5,0.0857,0.0024,0.0119,1.79E+02,this is a one stage adder
+6,0.0857,0.0024,0.0143,1.79E+02,this is a one stage adder
+10,0.0853,0.0024,0.0238,1.79E+02,this is a one stage adder

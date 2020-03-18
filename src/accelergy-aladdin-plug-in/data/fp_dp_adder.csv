@@ -1,0 +1,9 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+0.5,20.552,0.176,0.264,1.29E+04,this is a 3 stage floating point double precision adder
+1,43.754,0.133,0.4,9.88E+03,this is a 3 stage floating point double precision adder
+2,26.147,0.045,0.27,6.13E+03,this is a 3 stage floating point double precision adder
+3,25.787,0.041,0.368,5.98E+03,this is a 3 stage floating point double precision adder
+4,23.243,0.035,0.419,5.12E+03,this is a 3 stage floating point double precision adder
+5,23.269,0.035,0.526,5.12E+03,this is a 3 stage floating point double precision adder
+6,23.902,0.038,0.689,5.12E+03,this is a 3 stage floating point double precision adder
+10,17.779,0.03,0.905,3.99E+03,this is a 3 stage floating point double precision adder

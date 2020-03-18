@@ -1,0 +1,8 @@
+latency(ns),dynamic energy(pJ),leakage power(mW),idle energy(pJ),area(um^2),comment
+1,0.0181,0.00061,0.001,5.04E+01,this is a 1 stage bit wise operator
+2,0.018,0.00061,0.001,5.04E+01,this is a 1 stage bit wise operator
+3,0.018,0.00061,0.002,5.04E+01,this is a 1 stage bit wise operator
+4,0.018,0.00061,0.002,5.04E+01,this is a 1 stage bit wise operator
+5,0.018,0.00061,0.003,5.04E+01,this is a 1 stage bit wise operator
+6,0.018,0.00061,0.004,5.04E+01,this is a 1 stage bit wise operator
+10,0.0181,0.00061,0.006,5.04E+01,this is a 1 stage bit wise operator

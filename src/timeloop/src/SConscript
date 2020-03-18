@@ -1,0 +1,147 @@
+# Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#  * Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#  * Neither the name of NVIDIA CORPORATION nor the names of its
+#    contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# -*- mode:python -*-
+import os
+
+Import('env')
+
+env.Append(CPPDEFINES = [('BUILD_BASE_DIR', '\\"' + env["BUILD_BASE_DIR"] + '\\"')])
+env.Append(CPPPATH = ['src/include'])
+if GetOption('debug'):
+    env.Append(CCFLAGS = ['-g', '-O0'])
+else:
+    env.Append(CCFLAGS = ['-g', '-O3'])
+env.Append(CCFLAGS = ['-Werror', '-Wall', '-Wextra', '-fmax-errors=1', '-std=c++14', '-pthread'])
+
+env.Append(LINKFLAGS = ['-std=c++11', '-static-libgcc', '-static-libstdc++', '-pthread'])
+env.Append(LIBS = ['config++', 'yaml-cpp', 'ncurses'])
+
+if GetOption('link_static'):
+    print("Using static linking.")
+    env.Append(LINKFLAGS = [ '-Wl,--whole-archive', '-static', '-lpthread', '-Wl,--no-whole-archive'])
+    env.Append(LIBS = ['tinfo', 'gpm'])
+else:
+    print("Using dynamic linking.")
+
+env.Append(LIBS = ['boost_iostreams', 'boost_serialization'])
+
+if os.environ.get('BOOSTDIR'):
+    env.Append(CPPFLAGS = ['-I' + os.environ['BOOSTDIR'] + '/include'])
+    env.Append(LIBPATH = [os.environ['BOOSTDIR'] + '/lib'])
+
+if "LIBCONFIGPATH" in os.environ:
+    LIBCONFIGPATH = os.environ["LIBCONFIGPATH"]
+    env["LIBPATH"] += [LIBCONFIGPATH + '/lib']
+    env["CPPFLAGS"] += ['-I' + LIBCONFIGPATH + '/include']
+
+if "HDF5PATH" in os.environ:
+    HDF5PATH = os.environ["HDF5PATH"]
+    env["LIBPATH"] += [HDF5PATH + '/lib']
+    env["CPPFLAGS"] += ['-I' + HDF5PATH + '/include']
+    env["LIBS"] += ['hdf5', 'hdf5_hl']
+elif "HDF5PATH_INCLUDE" in os.environ:
+    HDF5PATH_INCLUDE = os.environ["HDF5PATH_INCLUDE"]
+    env["CPPPATH"] += ['-I' + HDF5PATH_INCLUDE]
+    env["LIBS"] += ['hdf5_cpp', 'hdf5_hl_cpp', 'hdf5_serial', 'hdf5_serial_hl']
+
+if "YAMLCPPPATH" in os.environ:
+    YAMLCPPPATH = os.environ["YAMLCPPPATH"]
+    env["LIBPATH"] += [YAMLCPPPATH + '/lib']
+    env["CPPFLAGS"] += ['-I' + YAMLCPPPATH + '/include']
+
+if GetOption('use_accelergy'):
+    env["CPPDEFINES"] += [('USE_ACCELERGY')]
+
+env["CPPPATH"] += ["."]
+
+if not os.path.isdir('../src/pat'):
+    print ("ERROR: 'src/pat' not found. Please create a symbolic link to the source code for the power-area-timing model and place it in src/pat. E.g., ln -s pat-public/src/pat src/pat.")
+    Exit(1)
+    
+common_sources = Split("""
+loop-analysis/tiling.cpp
+loop-analysis/nest-analysis.cpp
+pat/pat.cpp
+mapping/loop.cpp
+mapping/nest.cpp
+model/arithmetic.cpp
+model/buffer.cpp
+model/topology.cpp
+model/network-legacy.cpp
+model/network-reduction-tree.cpp
+model/network-simple-multicast.cpp
+util/numeric.cpp
+util/map2d.cpp
+workload/problem-shape.cpp
+workload/workload.cpp
+workload/operation-space.cpp
+compound-config/compound-config.cpp
+""")
+
+metrics_sources = common_sources + Split("""
+applications/metrics/main.cpp
+""")
+
+model_sources = common_sources + Split("""
+data/cnn/cnn-layers.cpp
+mapping/mapping.cpp
+mapping/parser.cpp
+applications/model/main.cpp
+""")
+
+mapper_sources = common_sources + Split("""
+data/cnn/cnn-layers.cpp
+mapping/mapping.cpp
+mapping/parser.cpp
+mapspaces/mapspace-base.cpp
+applications/mapper/main.cpp
+""")
+
+simple_mapper_sources = common_sources + Split("""
+data/cnn/cnn-layers.cpp
+mapping/mapping.cpp
+mapping/parser.cpp
+mapspaces/mapspace-base.cpp
+applications/simple-mapper/main.cpp
+""")
+
+design_space_sources = common_sources + Split("""
+data/cnn/cnn-layers.cpp
+mapping/mapping.cpp
+mapping/parser.cpp
+mapspaces/mapspace-base.cpp
+applications/design-space/main.cpp
+""")
+
+env.Program(target = 'timeloop-mapper', source = mapper_sources)
+env.Program(target = 'timeloop-model', source = model_sources)
+env.Program(target = 'timeloop-metrics', source = metrics_sources)
+env.Program(target = 'timeloop-simple-mapper', source = simple_mapper_sources)
+env.Program(target = 'timeloop-design-space', source = design_space_sources)
+
+#os.symlink(os.path.abspath('timeloop-mapper'), os.path.abspath('timeloop'))
+#os.symlink(os.path.abspath('timeloop-model'), os.path.abspath('model'))
