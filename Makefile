@@ -3,8 +3,8 @@
 #
 VERSION := 0.2
 
-USER    := nelliewu95
-REPO    := accelergy-timeloop-infrastructure-docker
+USER    := nelliewu
+REPO    := accelergy-timeloop-infrastructure
 
 NAME    := ${USER}/${REPO}
 TAG     := $$(git log -1 --pretty=%h)

@@ -2,30 +2,28 @@
 # Docker-compose file for running timeloop/accelergy
 #
 # Notes: 
-#    The exercises are put in ./tutorial
-#    The exercises will be owned by $USER_UID:$USER_GID
+#    The READMEs are put in ./workspace
+#    The workspace will be owned by $USER_UID:$USER_GID
 #
 
 # Run as follows:
 #
 #    1) Put this file in an otherwise empty directory
-#    2) Change USER_UID and USER_GID to the desired owner of your files
+#    2) Change USER_UID and USER_GID to the desired owner of your files (echo $UID )
 #    3) Cd to the directory containing this file
 #    4) Run the following command:
 #
-#        % docker-compose run --rm exercises 
-#
-#    5) Follow the directions in the exercise directories
+#        % docker-compose run --rm infrastructure 
 #    
 
 version: '3'
 
 services:
-  exercises:
+  infrastructure:
     hostname: accelergy-timeloop
-    image: nelliewu95/accelergy-timeloop-infrastructure:latest
+    image: nelliewu/accelergy-timeloop-infrastructure:latest
     volumes:
-      - ./README:/home/README
+      - ./workspace:/home/workspace
     environment:
       - USER_UID=1000
       - USER_GID=1000

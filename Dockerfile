@@ -74,7 +74,7 @@ LABEL org.label-schema.vcs-url="https://github.com/nelliewu95/accelergy-timeloop
 LABEL org.label-schema.vcs-ref=$VCS_REF
 LABEL org.label-schema.vendor="Wu"
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/README:/home/README nelliewu95/accelergy-timeloop-infrastructure"
+LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/workspace nelliewu/accelergy-timeloop-infrastructure"
 
 ENV BIN_DIR=/usr/local/bin
 ENV BUILD_DIR=/usr/local/src
@@ -128,14 +128,9 @@ RUN pip3 install setuptools \
     && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
     && cd .. \
     && cd accelergy-table-based-plug-ins \
-    && pip3 install .
-
-# Exercises
+    && pip3 install . 
 
 WORKDIR $BUILD_DIR
-
-# Actual exercises were copied in above
-COPY bin/refresh-sources $BIN_DIR
 
 # Set up entrypoint
 

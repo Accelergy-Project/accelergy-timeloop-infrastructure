@@ -3,17 +3,11 @@ This docker aims to provide an experimental environment for easy plug-and-play o
 
 ### System Setup
 Inside this docker you can find the source files of all necessary setups:
-- accelergy
-	- the energy estimation backend 
-- timeloop
-	- the mapping exploration frontend
-- accelergy-cacti-plug-in
-	- SRAM estimation plug-in
-- accelergy-aladdin-plug-in
-	- 45nm component plug-in
-- accelergy-table-based-plug-in
-	- entry point for creating your own table-based plug-ins
-	
+- accelergy: the energy estimation backend 
+- timeloop: the mapping exploration frontend
+- accelergy-cacti-plug-in: SRAM estimation plug-in
+- accelergy-aladdin-plug-in: 45nm component plug-in
+- accelergy-table-based-plug-in: entry point for creating your own table-based plug-ins
 They are already built/installed and ready to run!
 
 ### How to use the docker
@@ -23,7 +17,6 @@ They are already built/installed and ready to run!
     - cacti
     - timeloop-mapper
     - timeloop-model
-    - timeloop-metrics
     
 - Get some examples running!
     - You can clone example repos that we provide to you to your docker folder (available example repos can be found in the example repo readme)

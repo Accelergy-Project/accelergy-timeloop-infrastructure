@@ -26,7 +26,7 @@ usermod -u $USER_UID -g $USER_GID --non-unique workspace > /dev/null 2>&1
 
 # Populate "workspace" directory, and
 # change ownership of files in "workspace" home
-if [ ! -d /home/workspace/README]
+if [ ! -d /home/workspace/README ]
 then
    cp -r /usr/local/src/README /home/workspace
    chown -R $USER_UID:$USER_GID /home/workspace/README
@@ -38,7 +38,7 @@ chmod 755 /home/workspace
 
 if [ ! -e /home/workspace/.nointro ]
 then
-    more /home/workspace/README/README.md
+    more /home/workspace/README/readme.md
 fi
 
 # Default environment variable for Timeloop
