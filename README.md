@@ -1,7 +1,7 @@
-Timeloop/Accelergy tutorial
-============================
+## Accelergy-Timeloop Infrastructure
+======================================
 
-Tools and exercises for the Timeloop/Accelergy tutorial in a Docker container
+This docker aims to provide an experimental environment for easy plug-and-play of examples that run on the accelergy-timeloop DNN accelerator evaluation infrastructure. 
 
 Start the container
 -----------------
@@ -11,9 +11,9 @@ Start the container
 - Edit USER_UID and USER_GID in the file to the desired owner of your files
 - Run the following command:
 ```
-      % docker-compose run --rm exercises 
+      % docker-compose run --rm infrastructure 
 ```
-- Follow the directions in the exercise directories
+- Follow the instructions in the REAME directory to get public examples for this infrastructure
 
 
 Refresh the container/exercises
@@ -25,19 +25,12 @@ To update the Docker container run:
      % docker-compose pull
 ````
 
-If you are using a new Docker container or just want to the latest
-copy of the exercises, then start the container and type:
-
-```
-      % refresh-exercises
-```
-
 
 Build the container
 --------------------
 
 ```
-      % git clone --recurse-submodules https://github.com/jsemer/timeloop-accelergy-tutorial.git
-      % cd timeloop-accelergy-tutorial
+      % git clone --recurse-submodules https://github.com/nellie95/accelergy-timeloop-infrastucture.git
+      % cd accelergy-timeloop-infrastucture
       % make build [BUILD_FLAGS="<Docker build flags, e.g., --no-cache>"]
 ```
