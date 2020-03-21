@@ -8,7 +8,7 @@ Start the container
 
 - Put the *docker-compose.yaml* file in an otherwise empty directory
 - Cd to the directory containing the file
-- Edit USER_UID and USER_GID in the file to the desired owner of your files
+- Edit USER_UID and USER_GID in the file to the desired owner of your files (echo $UID, echo $GID)
 - Run the following command:
 ```
       % docker-compose run --rm infrastructure 
@@ -16,7 +16,7 @@ Start the container
 - Follow the instructions in the REAME directory to get public examples for this infrastructure
 
 
-Refresh the container/exercises
+Refresh the container
 ----------------------
 
 To update the Docker container run:

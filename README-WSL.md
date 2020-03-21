@@ -31,6 +31,8 @@ Build procedure
     cd ../accelergy-cacti-plug-in/
     pip3 install .
     cp -r ../cacti ~/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/
+    cd ../accelergy-table-based-plug-in/
+    pip3 install .
 
     cd ../timeloop
     cd src/
