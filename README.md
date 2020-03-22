@@ -11,7 +11,7 @@ Start the container
 - Edit USER_UID and USER_GID in the file to the desired owner of your files (echo $UID, echo $GID)
 - Run the following command:
 ```
-      % docker-compose run --rm infrastructure 
+      % docker-compose run infrastructure 
 ```
 - Follow the instructions in the REAME directory to get public examples for this infrastructure
 
