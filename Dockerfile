@@ -3,11 +3,10 @@ FROM ubuntu:18.04 AS builder
 ENV BUILD_DIR=/usr/local/src
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-               locales \
-               git \
-               scons \
-               python3-pip \
+    && apt-get install -y --no-install-recommends locales \
+    && apt-get install -y --no-install-recommends git \
+    && apt-get install -y --no-install-recommends scons \
+    && apt-get install -y --no-install-recommends python3-pip \
     && rm -rf /var/lib/apt/lists/* \
     && if [ ! -d $BUILD_DIR ]; then mkdir $BUILD_DIR; fi
 
@@ -81,9 +80,8 @@ ENV BUILD_DIR=/usr/local/src
 ENV SHARE_DIR=/usr/local/share
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-               git \
-               python3-pip \
+    && apt-get install -y --no-install-recommends git \
+    && apt-get install -y --no-install-recommends python3-pip \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd workspace \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \
@@ -104,6 +102,15 @@ WORKDIR $BUILD_DIR
 
 COPY src/ $BUILD_DIR/
 
+WORKDIR $BUILD_DIR
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends locales \
+    && locale-gen en_US.UTF-8
+ENV LC_CTYPE en_US.UTF-8
+ENV LANG en_US.UTF-8
+RUN pip3 install setuptools \
+    && cd terminal_markdown_viewer \
+    && pip3 install .
 
 # Accelergy
 
@@ -128,9 +135,8 @@ RUN pip3 install setuptools \
     && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
     && cd .. \
     && cd accelergy-table-based-plug-ins \
-    && pip3 install . 
+    && pip3 install .
 
-WORKDIR $BUILD_DIR
 
 # Set up entrypoint
 

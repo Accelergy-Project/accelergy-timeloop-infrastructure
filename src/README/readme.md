@@ -21,3 +21,6 @@ They are already built/installed and ready to run!
 - Get some examples running!
     - You can clone example repos that we provide to you to your docker folder (available example repos can be found in the example repo readme)
     - You can create your own models (if you already know the tools)
+
+Note, to skip this intro:
+```touch ~/.nointro```
