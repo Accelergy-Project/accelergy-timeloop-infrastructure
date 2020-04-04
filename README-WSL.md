@@ -19,7 +19,7 @@ Installation requirements
 Build procedure
 
 ```
-    git clone --recurse-submodules git@github.com:jsemer/timeloop-accelergy-tutorial.git
+    git clone --recurse-submodules https://github.com/nelliewu95/accelergy-timeloop-infrastructure.git
 
     cd src/cacti
     make
@@ -37,7 +37,7 @@ Build procedure
     cd ../timeloop
     cd src/
     ln -s ../pat-public/src/pat .
-    scons --accelergy -j4
+    scons --accelergy --static
     cp build/timeloop-* ~/.local/bin
 ```
 

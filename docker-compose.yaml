@@ -13,7 +13,7 @@
 #    3) Cd to the directory containing this file
 #    4) Run the following command:
 #
-#        % docker-compose run --rm infrastructure 
+#        % docker-compose run infrastructure 
 #    
 
 version: '3'
