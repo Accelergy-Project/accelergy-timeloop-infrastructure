@@ -3,6 +3,8 @@ Accelergy-Timeloop Infrastructure
 
 This docker aims to provide an experimental environment for easy plug-and-play of examples that run on the accelergy-timeloop DNN accelerator evaluation infrastructure. 
 
+This docker is modified based on: https://github.com/jsemer/timeloop-accelergy-tutorial
+
 Start the container
 -----------------
 
