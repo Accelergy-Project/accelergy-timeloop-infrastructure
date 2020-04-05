@@ -20,7 +20,7 @@ version: '3'
 
 services:
   infrastructure:
-    hostname: docker
+    hostname: accelergy-timeloop
     image: nelliewu/accelergy-timeloop-infrastructure:latest
     volumes:
       - ./workspace:/home/workspace

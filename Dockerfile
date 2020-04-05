@@ -102,15 +102,15 @@ WORKDIR $BUILD_DIR
 
 COPY src/ $BUILD_DIR/
 
-WORKDIR $BUILD_DIR
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends locales \
-    && locale-gen en_US.UTF-8
-ENV LC_CTYPE en_US.UTF-8
-ENV LANG en_US.UTF-8
-RUN pip3 install setuptools \
-    && cd terminal_markdown_viewer \
-    && pip3 install .
+#WORKDIR $BUILD_DIR
+#RUN apt-get update \
+#    && apt-get install -y --no-install-recommends locales \
+#    && locale-gen en_US.UTF-8
+#ENV LC_CTYPE en_US.UTF-8
+#ENV LANG en_US.UTF-8
+#RUN pip3 install setuptools \
+#    && cd terminal_markdown_viewer \
+#    && pip3 install .
 
 # Accelergy
 

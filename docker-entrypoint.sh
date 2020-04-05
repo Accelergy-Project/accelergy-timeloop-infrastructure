@@ -43,7 +43,9 @@ fi
 
 # Default environment variable for Timeloop
 export TIMELOOP_ACCURATE_READS_WITU=1
-export PS1="docker#"
+
+# Set shorter prompt name
+cp /usr/local/src/.bashrc /home/workspace/.bashrc
 
 #if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ]
 if [ "$@" != "bash" ] 
