@@ -1,1 +1,1 @@
-export PS1="docker%"
+export PS1="docker% "

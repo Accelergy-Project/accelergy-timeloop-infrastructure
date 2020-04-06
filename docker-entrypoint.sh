@@ -44,8 +44,12 @@ fi
 # Default environment variable for Timeloop
 export TIMELOOP_ACCURATE_READS_WITU=1
 
-# Set shorter prompt name
-cp /usr/local/src/.bashrc /home/workspace/.bashrc
+# Set shorter prompt name if there is no custom setup in users' own directories
+if [ ! -e /home/workspace/.bashrc ]
+then
+    cp /usr/local/src/.bashrc /home/workspace/.bashrc
+fi
+
 
 #if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ]
 if [ "$@" != "bash" ] 
