@@ -19,7 +19,7 @@ Installation requirements
 Build procedure
 
 ```
-    git clone --recurse-submodules https://github.com/nelliewu95/accelergy-timeloop-infrastructure.git
+    git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastructure.git
 
     cd src/cacti
     make
