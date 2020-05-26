@@ -82,6 +82,7 @@ ENV SHARE_DIR=/usr/local/share
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git \
     && apt-get install -y --no-install-recommends python3-pip \
+    && apt-get install -y --no-install-recommends python3 \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd workspace \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \

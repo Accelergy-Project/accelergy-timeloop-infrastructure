@@ -50,6 +50,22 @@ then
     cp /usr/local/src/.bashrc /home/workspace/.bashrc
 fi
 
+# Set default accelergy config file if there is no exsiting one
+if [ ! -e /home/workspace/.config/accelergy/accelergy_config.yaml ]
+then
+    # create necessary directories
+    if [ ! -e /home/workspace/.config ]
+    then
+        mkdir /home/workspace/.config
+    fi
+    # create necessary directories
+    if [ ! -e /home/workspace/.config/accelergy ]
+    then
+        mkdir /home/workspace/.config/accelergy
+    fi
+
+    cp /usr/local/src/accelergy_default_config.yaml /home/workspace/.config/accelergy/accelergy_config.yaml
+fi
 
 #if [ "$#" -eq 0 ] || [ "${1#-}" != "$1" ]
 if [ "$@" != "bash" ] 
