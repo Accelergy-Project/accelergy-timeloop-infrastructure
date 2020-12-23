@@ -142,7 +142,7 @@ RUN pip3 install setuptools \
 # Set up entrypoint
 
 COPY docker-entrypoint.sh $BIN_DIR
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["bash", "docker-entrypoint.sh"]
 
 WORKDIR /home/workspace
 CMD ["bash"]
