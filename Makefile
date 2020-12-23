@@ -1,9 +1,16 @@
 #
 # Ultility Makefile to build/push Docker images
 #
+#
+# Set the following environment variables before invoking make:
+#
+#   DOCKER_EXE=<name of docker executable>
+#   DOCKER_NAME=<name of user where image will be pushed>
+#   DOCKER_PASS=<password of uesr where image will be pushed>
+#
 VERSION := 0.2
 
-USER    := nelliewu
+USER    := timeloopaccelergy
 REPO    := accelergy-timeloop-infrastructure
 
 NAME    := ${USER}/${REPO}
@@ -35,6 +42,7 @@ build:
 # Push docker image
 
 push:
+	@echo "Pushing ${NAME}"
 	"${DOCKER_EXE}" push ${NAME}
  
 

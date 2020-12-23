@@ -56,7 +56,7 @@ RUN apt-get update \
 #
 FROM ubuntu:18.04
 
-LABEL maintainer="nelliewu@mit.edu"
+LABEL maintainer="timeloop-accelergy@mit.edu"
 
 # Arguments
 ARG BUILD_DATE
@@ -66,14 +66,14 @@ ARG BUILD_VERSION
 # Labels
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.build-date=$BUILD_DATE
-LABEL org.label-schema.name="nelliewu95/accelergy-timeloop-infrastructure"
+LABEL org.label-schema.name="Accelergy-Project/accelergy-timeloop-infrastructure"
 LABEL org.label-schema.description="Infrastructure setup for Timeloop/Accelergy tools"
 LABEL org.label-schema.url="http://accelergy.mit.edu/"
-LABEL org.label-schema.vcs-url="https://github.com/nelliewu95/accelergy-timeloop-infrastructure"
+LABEL org.label-schema.vcs-url="https://github.com/Accelergy-Project/accelergy-timeloop-infrastructure"
 LABEL org.label-schema.vcs-ref=$VCS_REF
 LABEL org.label-schema.vendor="Wu"
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/workspace nelliewu/accelergy-timeloop-infrastructure"
+LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/workspace timeloopaccelergy/accelergy-timeloop-infrastructure"
 
 ENV BIN_DIR=/usr/local/bin
 ENV BUILD_DIR=/usr/local/src

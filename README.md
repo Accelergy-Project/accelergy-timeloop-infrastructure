@@ -28,11 +28,22 @@ To update the Docker container run:
 ````
 
 
-Build the container
---------------------
+Build the image
+---------------
 
 ```
-      % git clone --recurse-submodules https://github.com/nellie95/accelergy-timeloop-infrastucture.git
+      % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastucture.git
       % cd accelergy-timeloop-infrastucture
+      % export DOCKER_EXE=<name of docker program, e.g., docker>
       % make build [BUILD_FLAGS="<Docker build flags, e.g., --no-cache>"]
+```
+
+Push the image to docker hub
+----------------------------
+
+```
+      % cd accelergy-timeloop-infrastucture
+      % export DOCKER_NAME=<name of user with push privileges>
+      % export DOCKER_PASS=<password of user with push privileges>
+      % make push
 ```
