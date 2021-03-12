@@ -1,13 +1,19 @@
 #
-# Ultility Makefile to build/push Docker images
+# Utility Makefile to build/push Docker images
 #
 #
-# Set the following environment variables before invoking make:
+# Optionally override
 #
 #   DOCKER_EXE=<name of docker executable>
-#   DOCKER_NAME=<name of user where image will be pushed>
-#   DOCKER_PASS=<password of uesr where image will be pushed>
+#   DOCKER_NAME=<name of user used to push the image>
 #
+# Set this envirnment or command line variable
+#
+#   DOCKER_PASS=<password of user used to push the image>
+#
+DOCKER_EXE ?= docker
+DOCKER_NAME ?= timeloopaccelergy
+
 VERSION := 0.2
 
 USER    := timeloopaccelergy
