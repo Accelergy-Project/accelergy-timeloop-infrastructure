@@ -2,8 +2,22 @@ Accelergy-Timeloop Infrastructure
 ---------------------------------------------------
 
 This docker aims to provide an experimental environment for easy plug-and-play of examples that run on the accelergy-timeloop DNN accelerator evaluation infrastructure. 
+You can also use the src included in this docker to perform native installation of the tools. 
+
+See instructions for both options below
 
 This docker is modified based on: https://github.com/jsemer/timeloop-accelergy-tutorial
+
+Native Install
+-----------------
+
+```
+      % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastucture.git
+      % cd accelergy-timeloop-infrastucture
+      % make pull
+      % cd /src  # check all the sources here
+      % to install all the tools: http://accelergy.mit.edu/infra_instructions.html
+```
 
 Start the container
 -----------------
@@ -28,6 +42,7 @@ To update the Docker container run:
 ````
 
 
+
 Build the image
 ---------------
 
@@ -35,6 +50,7 @@ Build the image
       % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastucture.git
       % cd accelergy-timeloop-infrastucture
       % export DOCKER_EXE=<name of docker program, e.g., docker>
+      % make pull
       % make build [BUILD_FLAGS="<Docker build flags, e.g., --no-cache>"]
 ```
 
