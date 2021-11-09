@@ -15,7 +15,7 @@ Native Install
       % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastucture.git
       % cd accelergy-timeloop-infrastucture
       % make pull
-      % cd /src  # check all the sources here
+      % cd src/  # check all the sources here
       % to install all the tools: http://accelergy.mit.edu/infra_instructions.html
 ```
 
