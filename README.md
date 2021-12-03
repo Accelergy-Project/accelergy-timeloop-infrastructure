@@ -12,8 +12,8 @@ Native Install
 -----------------
 
 ```
-      % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastucture.git
-      % cd accelergy-timeloop-infrastucture
+      % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastructure.git
+      % cd accelergy-timeloop-infrastructure
       % make pull
       % cd src/  # check all the sources here
       % to install all the tools: http://accelergy.mit.edu/infra_instructions.html
@@ -47,8 +47,8 @@ Build the image
 ---------------
 
 ```
-      % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastucture.git
-      % cd accelergy-timeloop-infrastucture
+      % git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastructure.git
+      % cd accelergy-timeloop-infrastructure
       % export DOCKER_EXE=<name of docker program, e.g., docker>
       % make pull
       % make build [BUILD_FLAGS="<Docker build flags, e.g., --no-cache>"]
@@ -58,7 +58,7 @@ Push the image to docker hub
 ----------------------------
 
 ```
-      % cd accelergy-timeloop-infrastucture
+      % cd accelergy-timeloop-infrastructure
       % export DOCKER_NAME=<name of user with push privileges>
       % export DOCKER_PASS=<password of user with push privileges>
       % make push
