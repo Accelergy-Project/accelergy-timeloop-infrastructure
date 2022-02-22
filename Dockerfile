@@ -77,7 +77,9 @@ LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/work
 
 ENV BIN_DIR=/usr/local/bin
 ENV BUILD_DIR=/usr/local/src
+ENV LIB_DIR=/usr/local/lib
 ENV SHARE_DIR=/usr/local/share
+ENV INCLUDE_DIR=/usr/local/include
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git \
@@ -96,6 +98,13 @@ COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper  $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-metrics $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-model   $BIN_DIR
 COPY --from=builder  $BUILD_DIR/cacti/cacti $BIN_DIR
+
+# Get libraries and includes
+
+WORKDIR $BUILD_DIR
+
+COPY --from=builder  $BUILD_DIR/timeloop/lib/*.a   $LIB_DIR/
+COPY --from=builder  $BUILD_DIR/timeloop/include/* $INCLUDE_DIR/timeloop/
 
 # Get all source
 
