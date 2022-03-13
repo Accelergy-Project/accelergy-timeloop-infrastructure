@@ -46,6 +46,7 @@ RUN apt-get update \
     && cd ./timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd .. \
+    && scons --accelergy \
     && scons --static --accelergy \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
@@ -82,13 +83,41 @@ ENV SHARE_DIR=/usr/local/share
 ENV INCLUDE_DIR=/usr/local/include
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        wget \
+        vim \
     && apt-get install -y --no-install-recommends python3-pip \
-    && apt-get install -y --no-install-recommends python3 \
+    && apt-get install -y --no-install-recommends python3-dev \
+    && apt-get install -y --no-install-recommends \
+       g++ \
+       libconfig++-dev \
+       libboost-dev \
+       libboost-iostreams-dev \
+       libboost-serialization-dev \
+       libyaml-cpp-dev \
+       libncurses5-dev \
+       libtinfo-dev \
+       libgpm-dev \
+       cmake \
+       ninja-build \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd workspace \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \
     && if [ ! -d $BUILD_DIR ]; then mkdir $BUILD_DIR; fi
+
+# Add conda and python3.8
+WORKDIR $BIN_DIR
+
+RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && chmod +x ~/miniconda.sh \
+    && ~/miniconda.sh -b -p $BIN_DIR/conda \
+    && rm ~/miniconda.sh
+
+ENV PATH=$BIN_DIR/conda/bin:$PATH
+
+RUN conda install -y python=3.8
 
 # Get tools built in other containers
 
@@ -104,6 +133,7 @@ COPY --from=builder  $BUILD_DIR/cacti/cacti $BIN_DIR
 WORKDIR $BUILD_DIR
 
 COPY --from=builder  $BUILD_DIR/timeloop/lib/*.a   $LIB_DIR/
+COPY --from=builder  $BUILD_DIR/timeloop/lib/*.so  $LIB_DIR/
 COPY --from=builder  $BUILD_DIR/timeloop/include/* $INCLUDE_DIR/timeloop/
 
 # Get all source
@@ -130,23 +160,34 @@ WORKDIR $BUILD_DIR
 
 COPY --from=builder  $BUILD_DIR/cacti $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti
 
-RUN pip3 install setuptools \
-    && pip3 install wheel \
-    && pip3 install libconf \
-    && pip3 install numpy \
+RUN pip install setuptools \
+    && pip install wheel \
+    && pip install libconf \
+    && pip install numpy \
     && cd accelergy \
-    && pip3 install . \
+    && pip install . \
     && cd .. \
     && cd accelergy-aladdin-plug-in \
-    && pip3 install . \
+    && pip install . \
     && cd .. \
     && cd accelergy-cacti-plug-in \
-    && pip3 install . \
+    && pip install . \
     && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
     && cd .. \
     && cd accelergy-table-based-plug-ins \
-    && pip3 install .
+    && pip install .
 
+# PyTimeloop
+
+WORKDIR $BUILD_DIR
+
+RUN cd timeloop/src \
+    && ln -s ../pat-public/src/pat . \
+    && cd ../../timeloop-python \
+    && rm -rf build \
+    && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
+       TIMELOOP_LIB_PATH=$LIB_DIR \
+       python3 -m pip install -e .
 
 # Set up entrypoint
 
@@ -155,3 +196,4 @@ ENTRYPOINT ["bash", "docker-entrypoint.sh"]
 
 WORKDIR /home/workspace
 CMD ["bash"]
+
