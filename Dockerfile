@@ -166,6 +166,8 @@ RUN pip3 install setuptools \
     && pip3 install .
 
 # Add conda and python3.8 (in conda)
+# WARNING: Conda should be installed after Accelergy. Otherwise, some Accelergy
+# data files are not installed correctly.
 WORKDIR $BIN_DIR
 
 RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
