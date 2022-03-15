@@ -22,7 +22,7 @@ REPO    := accelergy-timeloop-infrastructure
 NAME    := ${USER}/${REPO}
 TAG     := $$(git log -1 --pretty=%h)
 IMG     := ${NAME}:${TAG}
-LATEST  := ${NAME}:dev
+LATEST  := ${NAME}:latest
 
 
 all:	build
