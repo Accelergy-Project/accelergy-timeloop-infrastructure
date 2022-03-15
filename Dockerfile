@@ -107,18 +107,6 @@ RUN apt-get update \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \
     && if [ ! -d $BUILD_DIR ]; then mkdir $BUILD_DIR; fi
 
-# Add conda and python3.8
-WORKDIR $BIN_DIR
-
-RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-    && chmod +x ~/miniconda.sh \
-    && ~/miniconda.sh -b -p $BIN_DIR/conda \
-    && rm ~/miniconda.sh
-
-ENV PATH=$BIN_DIR/conda/bin:$PATH
-
-RUN conda install -y python=3.8
-
 # Get tools built in other containers
 
 WORKDIR $BUILD_DIR
@@ -160,22 +148,34 @@ WORKDIR $BUILD_DIR
 
 COPY --from=builder  $BUILD_DIR/cacti $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti
 
-RUN pip install setuptools \
-    && pip install wheel \
-    && pip install libconf \
-    && pip install numpy \
+RUN pip3 install setuptools \
+    && pip3 install wheel \
+    && pip3 install libconf \
+    && pip3 install numpy \
     && cd accelergy \
-    && pip install . \
+    && pip3 install . \
     && cd .. \
     && cd accelergy-aladdin-plug-in \
-    && pip install . \
+    && pip3 install . \
     && cd .. \
     && cd accelergy-cacti-plug-in \
-    && pip install . \
+    && pip3 install . \
     && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
     && cd .. \
     && cd accelergy-table-based-plug-ins \
-    && pip install .
+    && pip3 install .
+
+# Add conda and python3.8 (in conda)
+WORKDIR $BIN_DIR
+
+RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && chmod +x ~/miniconda.sh \
+    && ~/miniconda.sh -b -p $BIN_DIR/conda \
+    && rm ~/miniconda.sh
+
+ENV PATH=$BIN_DIR/conda/bin:$PATH
+
+RUN conda install -y python=3.8
 
 # PyTimeloop
 
