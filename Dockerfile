@@ -6,6 +6,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends locales \
     && apt-get install -y --no-install-recommends git \
     && apt-get install -y --no-install-recommends scons \
+    && apt-get install -y --no-install-recommends make \
+    && apt-get install -y --no-install-recommends python3.8 \
     && apt-get install -y --no-install-recommends python3-pip \
     && rm -rf /var/lib/apt/lists/* \
     && if [ ! -d $BUILD_DIR ]; then mkdir $BUILD_DIR; fi
@@ -55,7 +57,7 @@ RUN apt-get update \
 #
 # Main image
 #
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 LABEL maintainer="timeloop-accelergy@mit.edu"
 
@@ -88,8 +90,9 @@ RUN apt-get update \
         git \
         wget \
         vim \
-    && apt-get install -y --no-install-recommends python3-pip \
     && apt-get install -y --no-install-recommends python3-dev \
+    && apt-get install -y --no-install-recommends python3-pip \
+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata \
     && apt-get install -y --no-install-recommends \
        g++ \
        libconfig++-dev \
@@ -136,9 +139,9 @@ COPY src/ $BUILD_DIR/
 #    && locale-gen en_US.UTF-8
 #ENV LC_CTYPE en_US.UTF-8
 #ENV LANG en_US.UTF-8
-#RUN pip3 install setuptools \
+#RUN python3 -m pip install setuptools \
 #    && cd terminal_markdown_viewer \
-#    && pip3 install .
+#    && python3 -m pip install .
 
 # Accelergy
 
@@ -148,22 +151,22 @@ WORKDIR $BUILD_DIR
 
 COPY --from=builder  $BUILD_DIR/cacti $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti
 
-RUN pip3 install setuptools \
-    && pip3 install wheel \
-    && pip3 install libconf \
-    && pip3 install numpy \
+RUN python3 -m pip install setuptools \
+    && python3 -m pip install wheel \
+    && python3 -m pip install libconf \
+    && python3 -m pip install numpy \
     && cd accelergy \
-    && pip3 install . \
+    && python3 -m pip install . \
     && cd .. \
     && cd accelergy-aladdin-plug-in \
-    && pip3 install . \
+    && python3 -m pip install . \
     && cd .. \
     && cd accelergy-cacti-plug-in \
-    && pip3 install . \
+    && python3 -m pip install . \
     && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
     && cd .. \
     && cd accelergy-table-based-plug-ins \
-    && pip3 install .
+    && python3 -m pip install .
 
 # Add conda and python3.8 (in conda)
 # WARNING: Conda should be installed after Accelergy. Otherwise, some Accelergy
