@@ -1,6 +1,9 @@
 #
 # Utility Makefile to build/push Docker images
 #
+# To use an alternate tag invoke as:
+#
+#   make build ALTTAG=<alternate-tag>
 #
 # Optionally override
 #
@@ -22,7 +25,9 @@ REPO    := accelergy-timeloop-infrastructure
 NAME    := ${USER}/${REPO}
 TAG     := $$(git log -1 --pretty=%h)
 IMG     := ${NAME}:${TAG}
-LATEST  := ${NAME}:latest
+
+ALTTAG  := latest
+ALTIMG  := ${NAME}:${ALTTAG}
 
 
 all:	build
@@ -42,15 +47,15 @@ build:
           --build-arg VCS_REF=${TAG} \
           --build-arg BUILD_VERSION=${VERSION} \
           -t ${IMG} .
-	"${DOCKER_EXE}" tag ${IMG} ${LATEST}
- 
+	"${DOCKER_EXE}" tag ${IMG} ${ALTIMG}
+
 
 # Push docker image
 
 push:
-	@echo "Pushing ${NAME}"
-	"${DOCKER_EXE}" push ${NAME}
- 
+	@echo "Pushing ${NAME}:${ALTTAG}"
+	"${DOCKER_EXE}" push ${NAME}:${ALTTAG}
+
 
 # Lint the Dockerfile
 
