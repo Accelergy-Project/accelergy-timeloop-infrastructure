@@ -1,8 +1,9 @@
-FROM ubuntu:18.04 AS builder
+FROM ubuntu:20.04 AS builder
 
 ENV BUILD_DIR=/usr/local/src
 
 RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata \
     && apt-get install -y --no-install-recommends locales \
     && apt-get install -y --no-install-recommends git \
     && apt-get install -y --no-install-recommends scons \
