@@ -26,7 +26,7 @@ NAME    := ${USER}/${REPO}
 TAG     := $$(git log -1 --pretty=%h)
 IMG     := ${NAME}:${TAG}
 
-ALTTAG  := latest
+ALTTAG  := micro22-artifact
 ALTIMG  := ${NAME}:${ALTTAG}
 
 
