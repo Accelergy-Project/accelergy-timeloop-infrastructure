@@ -63,3 +63,8 @@ Push the image to docker hub
       % export DOCKER_PASS=<password of user with push privileges>
       % make push
 ```
+
+
+### Infrastructure model
+
+![Infrastructure model](.infragenie/infrastructure_model.png)
