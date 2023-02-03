@@ -51,7 +51,10 @@ Build the image
       % cd accelergy-timeloop-infrastructure
       % export DOCKER_EXE=<name of docker program, e.g., docker>
       % make pull
+      % # Build two images for both amd64 and arm64
       % make build [BUILD_FLAGS="<Docker build flags, e.g., --no-cache>"]
+      % # If you want to build for specific architecture
+      % # make "build-amd64 or build-arm64"
 ```
 
 Push the image to docker hub
@@ -61,5 +64,8 @@ Push the image to docker hub
       % cd accelergy-timeloop-infrastructure
       % export DOCKER_NAME=<name of user with push privileges>
       % export DOCKER_PASS=<password of user with push privileges>
+      % # Pushing both images
       % make push
+      % # If you want to push an image for specific arhitecture
+      % # make "push-amd64 or push-arm64"
 ```
