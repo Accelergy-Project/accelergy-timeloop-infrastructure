@@ -1,0 +1,24 @@
+diff --git a/cacti.mk b/cacti.mk
+index b675d75..d7722e2 100644
+--- a/cacti.mk
++++ b/cacti.mk
+@@ -13,7 +13,7 @@ INCS = -lm
+ 
+ ifeq ($(TAG),dbg)
+   DBG = -Wall 
+-  OPT = -ggdb -g -O0 -DNTHREADS=1  -gstabs+
++  OPT = -ggdb -g -O0 -DNTHREADS=1
+ else
+   DBG = 
+   OPT = -g  -msse2 -mfpmath=sse -DNTHREADS=$(NTHREADS)
+@@ -21,8 +21,8 @@ endif
+ 
+ #CXXFLAGS = -Wall -Wno-unknown-pragmas -Winline $(DBG) $(OPT) 
+ CXXFLAGS = -Wno-unknown-pragmas $(DBG) $(OPT) 
+-CXX = g++ -m64
+-CC  = gcc -m64
++CXX = g++ -march=native
++CC  = gcc -march=native
+ 
+ SRCS  = area.cc bank.cc mat.cc main.cc Ucache.cc io.cc technology.cc basic_circuit.cc parameter.cc \
+ 		decoder.cc component.cc uca.cc subarray.cc wire.cc htree2.cc extio.cc extio_technology.cc \
