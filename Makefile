@@ -59,9 +59,7 @@ build-arm64:
           -t ${IMG}-arm64 .
 	"${DOCKER_EXE}" tag ${IMG}-arm64 ${ALTIMG}-arm64
 
-build:
-	build-amd64
-	build-arm64
+build: build-amd64 build-arm64
 
 # Push docker image
 
@@ -89,9 +87,7 @@ push-arm64:
 	  --amend ${NAME}:${ALTTAG}-arm64 
 	"${DOCKER_EXE}" manifest push ${NAME}:${ALTTAG}
 	
-push:
-	push-amd64
-	push-arm64
+push: push-amd64 push-arm64
 
 # Lint the Dockerfile
 
