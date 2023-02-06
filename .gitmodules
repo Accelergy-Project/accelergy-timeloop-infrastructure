@@ -22,3 +22,9 @@
 [submodule "src/timeloop-python"]
 	path = src/timeloop-python
 	url = https://github.com/Accelergy-Project/timeloop-python.git
+[submodule "src/accelergy-mcpat-plug-in"]
+	path = src/accelergy-mcpat-plug-in
+	url = https://github.com/Accelergy-Project/accelergy-mcpat-plug-in.git
+[submodule "src/mcpat"]
+	path = src/mcpat
+	url = https://github.com/HewlettPackard/mcpat.git
