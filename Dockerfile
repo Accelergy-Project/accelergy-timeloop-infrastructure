@@ -28,6 +28,20 @@ RUN apt-get update \
     && make \
     && chmod -R 777 .
 
+# McPAT
+
+WORKDIR $BUILD_DIR
+
+COPY src/mcpat $BUILD_DIR/mcpat
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+               g++-multilib \
+    && rm -rf /var/lib/apt/lists/* \
+    && cd mcpat \
+    && make \
+    && chmod -R 777 .
+
 # Build and install timeloop
 
 WORKDIR $BUILD_DIR
@@ -45,12 +59,14 @@ RUN apt-get update \
                libncurses5-dev \
                libtinfo-dev \
                libgpm-dev \
+               libgmp-dev \
     && rm -rf /var/lib/apt/lists/* \
     && cd ./timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd .. \
-    && scons --accelergy \
-    && scons --static --accelergy \
+    # --d for debug purpose
+    && scons --d --accelergy \
+    && scons --d --static --accelergy \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
     && cp build/timeloop-model   /usr/local/bin
@@ -70,14 +86,16 @@ ARG BUILD_VERSION
 # Labels
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.build-date=$BUILD_DATE
-LABEL org.label-schema.name="Accelergy-Project/accelergy-timeloop-infrastructure"
+#LABEL org.label-schema.name="Accelergy-Project/accelergy-timeloop-infrastructure"
+LABEL org.label-schema.name="Accelergy-Project/accelergy-timeloop-infrastructure-with-mcpat"
 LABEL org.label-schema.description="Infrastructure setup for Timeloop/Accelergy tools"
 LABEL org.label-schema.url="http://accelergy.mit.edu/"
 LABEL org.label-schema.vcs-url="https://github.com/Accelergy-Project/accelergy-timeloop-infrastructure"
 LABEL org.label-schema.vcs-ref=$VCS_REF
 LABEL org.label-schema.vendor="Wu"
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/workspace timeloopaccelergy/accelergy-timeloop-infrastructure"
+#LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/workspace timeloopaccelergy/accelergy-timeloop-infrastructure"
+LABEL org.label-schema.docker.cmd="docker run -it --rm -v ~/workspace:/home/workspace vi270662/accelergy-timeloop-infrastructure-with-mcpat"
 
 ENV BIN_DIR=/usr/local/bin
 ENV BUILD_DIR=/usr/local/src
@@ -111,6 +129,10 @@ RUN apt-get update \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \
     && if [ ! -d $BUILD_DIR ]; then mkdir $BUILD_DIR; fi
 
+# For debug purpose
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gdb
+
 # Get tools built in other containers
 
 WORKDIR $BUILD_DIR
@@ -119,6 +141,7 @@ COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper  $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-metrics $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-model   $BIN_DIR
 COPY --from=builder  $BUILD_DIR/cacti/cacti $BIN_DIR
+COPY --from=builder  $BUILD_DIR/mcpat/mcpat $BIN_DIR
 
 # Get libraries and includes
 
@@ -151,6 +174,7 @@ WORKDIR $BUILD_DIR
 # Note source for accelergy was copied in above
 
 COPY --from=builder  $BUILD_DIR/cacti $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti
+COPY --from=builder  $BUILD_DIR/mcpat $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-mcpat-plug-in/mcpat
 
 RUN python3 -m pip install setuptools \
     && python3 -m pip install wheel \
@@ -166,8 +190,33 @@ RUN python3 -m pip install setuptools \
     && python3 -m pip install . \
     && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
     && cd .. \
+    && cd accelergy-mcpat-plug-in \
+    && python3 -m pip install . \
+    && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-mcpat-plug-in \
+    && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-mcpat-plug-in/mcpat \
+    && cd .. \
     && cd accelergy-table-based-plug-ins \
     && python3 -m pip install .
+
+# Add conda and python3.8 (in conda)
+# WARNING: Conda should be installed after Accelergy. Otherwise, some Accelergy
+# data files are not installed correctly.
+WORKDIR $BIN_DIR
+
+# Errors with the latest version of Miniconda (the bash execution solution
+# does not work either)
+# An older version is used (see https://repo.continuum.io/miniconda/)
+# ( SHELL ["/bin/bash", "-c"] )
+#RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+RUN wget -O ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh \
+    && chmod +x ~/miniconda.sh \
+    && ~/miniconda.sh -b -p $BIN_DIR/conda \
+    && rm ~/miniconda.sh
+# ( SHELL ["/bin/sh", "-c"] )
+
+ENV PATH=$BIN_DIR/conda/bin:$PATH
+
+RUN conda install -y python=3.8
 
 # PyTimeloop
 

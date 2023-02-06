@@ -21,7 +21,7 @@ version: '3'
 services:
   infrastructure:
     hostname: accelergy-timeloop
-    image: timeloopaccelergy/accelergy-timeloop-infrastructure:latest
+    image: vi270662/accelergy-timeloop-infrastructure-with-mcpat:latest
     volumes:
       - ./workspace:/home/workspace
     environment:

@@ -19,8 +19,10 @@ DOCKER_NAME ?= timeloopaccelergy
 
 VERSION := 0.2
 
-USER    := timeloopaccelergy
-REPO    := accelergy-timeloop-infrastructure
+#USER    := timeloopaccelergy
+USER    := vi270662
+#REPO    := accelergy-timeloop-infrastructure
+REPO    := accelergy-timeloop-infrastructure-with-mcpat
 
 NAME    := ${USER}/${REPO}
 TAG     := $$(git log -1 --pretty=%h)
