@@ -13,15 +13,22 @@
 #    3) Cd to the directory containing this file
 #    4) Run the following command:
 #
-#        % docker-compose run infrastructure 
-#    
+#        % If you are using x86 CPU (Intel, AMD)
+#        % DOCKER_ARCH=amd64 docker-compose run infrastructure 
+#
+#        % If you are using arm CPU (Apple M1/M2)
+#        % DOCKER_ARCH=arm64 docker-compose run infrastructure 
+#
+#        % If you want to avoid typing "DOCKER_ARCH=" every time,
+#        % "export DOCKER_ARCH=<your architecture>" >> ~/.bashrc && source ~/.bashrc
+#
 
 version: '3'
 
 services:
   infrastructure:
     hostname: accelergy-timeloop
-    image: timeloopaccelergy/accelergy-timeloop-infrastructure:latest
+    image: timeloopaccelergy/accelergy-timeloop-infrastructure:latest-${DOCKER_ARCH}
     volumes:
       - ./workspace:/home/workspace
     environment:

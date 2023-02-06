@@ -27,7 +27,14 @@ Start the container
 - Edit USER_UID and USER_GID in the file to the desired owner of your files (echo $UID, echo $GID)
 - Run the following command:
 ```
-      % docker-compose run infrastructure 
+      % If you are using x86 CPU (Intel, AMD)
+      % DOCKER_ARCH=amd64 docker-compose run infrastructure 
+
+      % If you are using arm CPU (Apple M1/M2)
+      % DOCKER_ARCH=arm64 docker-compose run infrastructure 
+
+      % If you want to avoid typing "DOCKER_ARCH=" every time,
+      % "export DOCKER_ARCH=<your architecture>" >> ~/.bashrc && source ~/.bashrc
 ```
 - Follow the instructions in the REAME directory to get public examples for this infrastructure
 
@@ -38,7 +45,14 @@ Refresh the container
 To update the Docker container run:
 
 ```
-     % docker-compose pull
+     % If you are using x86 CPU (Intel, AMD)
+     % DOCKER_ARCH=amd64 docker-compose pull 
+
+     % If you are using arm CPU (Apple M1/M2)
+     % DOCKER_ARCH=arm64 docker-compose pull
+
+     % If you want to avoid typing "DOCKER_ARCH=" every time,
+     % "export DOCKER_ARCH=<your architecture>" >> ~/.bashrc && source ~/.bashrc
 ````
 
 
@@ -51,10 +65,7 @@ Build the image
       % cd accelergy-timeloop-infrastructure
       % export DOCKER_EXE=<name of docker program, e.g., docker>
       % make pull
-      % # Build two images for both amd64 and arm64
-      % make build [BUILD_FLAGS="<Docker build flags, e.g., --no-cache>"]
-      % # If you want to build for specific architecture
-      % # make "build-amd64 or build-arm64"
+      % "make build-amd64" or "make build-arm64" depending on your architecture
 ```
 
 Push the image to docker hub
@@ -64,8 +75,5 @@ Push the image to docker hub
       % cd accelergy-timeloop-infrastructure
       % export DOCKER_NAME=<name of user with push privileges>
       % export DOCKER_PASS=<password of user with push privileges>
-      % # Pushing both images
-      % make push
-      % # If you want to push an image for specific arhitecture
-      % # make "push-amd64 or push-arm64"
+      % "make push-amd64" or "make push-arm64"
 ```
