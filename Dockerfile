@@ -173,7 +173,12 @@ RUN python3 -m pip install setuptools \
 
 WORKDIR $BUILD_DIR
 
-RUN cd timeloop/src \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+               g++ \
+               cmake \
+               make \
+    && cd timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd ../../timeloop-python \
     && rm -rf build \

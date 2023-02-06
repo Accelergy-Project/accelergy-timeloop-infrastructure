@@ -36,10 +36,11 @@ all:	build
 # Pull all submodules
 
 pull:
-	git submodule foreach git pull origin master
-	cp cacti.patch ./src/cacti/
-	cd ./src/cacti/
-	git apply cacti.patch
+	git submodule update --remote --merge && \
+	cp cacti.patch ./src/cacti/ && \
+	cd ./src/cacti/ && \
+	git reset --hard && \
+	git apply cacti.patch && \
 	cd ../../
 
 # Build and tag docker image
@@ -58,8 +59,6 @@ build-arm64:
           --build-arg BUILD_VERSION=${VERSION} \
           -t ${IMG}-arm64 .
 	"${DOCKER_EXE}" tag ${IMG}-arm64 ${ALTIMG}-arm64
-
-build: build-amd64 build-arm64
 
 # Push docker image
 
@@ -87,8 +86,6 @@ push-arm64:
 	  --amend ${NAME}:${ALTTAG}-arm64 
 	"${DOCKER_EXE}" manifest push ${NAME}:${ALTTAG}
 	
-push: push-amd64 push-arm64
-
 # Lint the Dockerfile
 
 lint:
