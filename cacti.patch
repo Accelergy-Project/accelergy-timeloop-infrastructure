@@ -17,8 +17,8 @@ index b675d75..d7722e2 100644
  CXXFLAGS = -Wno-unknown-pragmas $(DBG) $(OPT) 
 -CXX = g++ -m64
 -CC  = gcc -m64
-+CXX = g++ -march=native
-+CC  = gcc -march=native
++CXX = g++
++CC  = gcc
  
  SRCS  = area.cc bank.cc mat.cc main.cc Ucache.cc io.cc technology.cc basic_circuit.cc parameter.cc \
  		decoder.cc component.cc uca.cc subarray.cc wire.cc htree2.cc extio.cc extio_technology.cc \
