@@ -53,7 +53,9 @@ RUN apt-get update \
     && scons --static --accelergy \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
-    && cp build/timeloop-model   /usr/local/bin
+    && cp build/timeloop-model   /usr/local/bin \
+    && cp build/libtimeloop-mapper.so /usr/local/lib \
+    && cp build/libtimeloop-model.so  /usr/local/lib
 
 #
 # Main image
@@ -105,7 +107,7 @@ RUN apt-get update \
        libtinfo-dev \
        libgpm-dev \
        cmake \
-       ninja-build \
+       make \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd workspace \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \
@@ -173,13 +175,15 @@ RUN python3 -m pip install setuptools \
 
 WORKDIR $BUILD_DIR
 
-RUN cd timeloop/src \
+RUN apt-get update \
+    && cd timeloop/src \
     && ln -s ../pat-public/src/pat . \
-    && cd ../../timeloop-python \
+    && cd $BUILD_DIR \
+    && cd timeloop-python \
     && rm -rf build \
     && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
-       TIMELOOP_LIB_PATH=$LIB_DIR \
-       python3 -m pip install -e .
+       TIMELOOP_LIB_DIR=$BUILD_DIR/timeloop/lib \
+       python3 -m pip install .
 
 # Set up entrypoint
 
