@@ -176,13 +176,17 @@ RUN python3 -m pip install setuptools \
 WORKDIR $BUILD_DIR
 
 RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        g++
+        cmake \
+        make \
     && cd timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd $BUILD_DIR \
     && cd timeloop-python \
     && rm -rf build \
     && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
-       TIMELOOP_LIB_DIR=$BUILD_DIR/timeloop/lib \
+       TIMELOOP_LIB_DIR=$LIB_DIR \
        python3 -m pip install .
 
 # Set up entrypoint
