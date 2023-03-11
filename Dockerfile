@@ -184,7 +184,11 @@ RUN apt-get update \
     && rm -rf build \
     && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
        TIMELOOP_LIB_PATH=$LIB_DIR \
-       python3 -m pip install -e .
+       python3 -m pip install .
+
+# Ruamel yaml
+RUN pip3 install ruamel.yaml
+
 
 # Set up entrypoint
 
