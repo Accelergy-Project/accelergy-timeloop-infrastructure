@@ -10,6 +10,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends make \
     && apt-get install -y --no-install-recommends python3.8 \
     && apt-get install -y --no-install-recommends python3-pip \
+    && apt-get install -y --no-install-recommends doxygen \
     && rm -rf /var/lib/apt/lists/* \
     && if [ ! -d $BUILD_DIR ]; then mkdir $BUILD_DIR; fi
 
@@ -54,6 +55,11 @@ RUN apt-get update \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
     && cp build/timeloop-model   /usr/local/bin
+
+WORKDIR $BUILD_DIR
+
+RUN cd ./timeloop \
+    && doxygen .doxygen-config
 
 #
 # Main image
@@ -143,6 +149,10 @@ COPY src/ $BUILD_DIR/
 #RUN python3 -m pip install setuptools \
 #    && cd terminal_markdown_viewer \
 #    && python3 -m pip install .
+
+# Get Timeloop documentation
+
+COPY --from=builder $BUILD_DIR/timeloop/docs $BUILD_DIR/timeloop
 
 # Accelergy
 
