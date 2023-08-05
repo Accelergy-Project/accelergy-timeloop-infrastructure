@@ -54,12 +54,8 @@ RUN apt-get update \
     && scons --static --accelergy \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
-    && cp build/timeloop-model   /usr/local/bin
-
-WORKDIR $BUILD_DIR
-
-RUN cd ./timeloop \
-    && doxygen .doxygen-config
+    && cp build/timeloop-model   /usr/local/bin \
+    && cp build/timeloop-mapper-topk /usr/local/bin
 
 #
 # Main image
@@ -124,6 +120,7 @@ WORKDIR $BUILD_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper  $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-metrics $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-model   $BIN_DIR
+COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper-topk $BIN_DIR
 COPY --from=builder  $BUILD_DIR/cacti/cacti $BIN_DIR
 
 # Get libraries and includes
@@ -152,7 +149,7 @@ COPY src/ $BUILD_DIR/
 
 # Get Timeloop documentation
 
-COPY --from=builder $BUILD_DIR/timeloop/docs $BUILD_DIR/timeloop
+# COPY --from=builder $BUILD_DIR/timeloop/docs $BUILD_DIR/timeloop
 
 # Accelergy
 
@@ -181,20 +178,20 @@ RUN python3 -m pip install setuptools \
 
 # PyTimeloop
 
-WORKDIR $BUILD_DIR
+# WORKDIR $BUILD_DIR
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-               g++ \
-               cmake \
-               make \
-    && cd timeloop/src \
-    && ln -s ../pat-public/src/pat . \
-    && cd ../../timeloop-python \
-    && rm -rf build \
-    && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
-       TIMELOOP_LIB_PATH=$LIB_DIR \
-       python3 -m pip install .
+# RUN apt-get update \
+#     && apt-get install -y --no-install-recommends \
+#                g++ \
+#                cmake \
+#                make \
+#     && cd timeloop/src \
+#     && ln -s ../pat-public/src/pat . \
+ #    && cd ../../timeloop-python \
+ #    && rm -rf build \
+ #    && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
+ #       TIMELOOP_LIB_PATH=$LIB_DIR \
+ #       python3 -m pip install .
 
 # Ruamel yaml
 RUN pip3 install ruamel.yaml

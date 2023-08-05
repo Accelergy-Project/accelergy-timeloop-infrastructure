@@ -1,0 +1,215 @@
+Only in ../timeloop-topk/accelergy-timeloop-infrastructure/src/timeloop/include/applications: mapper-topk
+diff -cr ./src/timeloop/src/SConscript ../timeloop-topk/accelergy-timeloop-infrastructure/src/timeloop/src/SConscript
+*** ./src/timeloop/src/SConscript	2023-08-04 19:20:47.051839040 -0400
+--- ../timeloop-topk/accelergy-timeloop-infrastructure/src/timeloop/src/SConscript	2023-08-04 19:17:57.467152271 -0400
+***************
+*** 38,68 ****
+      env.Append(CCFLAGS = ['-g', '-O0'])
+  else:
+      env.Append(CCFLAGS = ['-g', '-O3', '-flto'])
+!     
+! env.Append(CCFLAGS = ['-Werror', '-Wall', '-Wextra', '-std=c++17', '-pthread'])
+! 
+! if GetOption('clang'):
+!   env.Append(CCFLAGS = ['-ferror-limit=1'])
+! else:
+!   env.Append(CCFLAGS = ['-fmax-errors=1'])
+  
+  env.Append(LIBPATH = ['.'])
+  # If we are doing a static build, the timeloop library must be the first
+  # item in the link order.
+  if GetOption('link_static'):
+!     env.Append(LIBS = ['timeloop-mapper'])
+  
+! env.Append(LINKFLAGS = ['-std=c++17', '-pthread'])
+! if str(Platform()) != 'darwin':
+!   env.Append(LINKFLAGS = ['-static-libgcc', '-static-libstdc++'])
+! 
+! env.Append(LIBS = ['config++', 'yaml-cpp', 'ncurses'])
+! if str(Platform()) != 'darwin':
+!   env.Append(LIBS = ['tinfo'])
+! 
+! # barvinok needs to be before isl because it references isl functions
+  if GetOption('with_isl'):
+!     env.Append(LIBS = ['barvinok', 'isl', 'ntl', 'pthread', 'polylibgmp', 'gmp'])
+  
+  if GetOption('link_static'):
+      print("Using static linking.")
+--- 38,55 ----
+      env.Append(CCFLAGS = ['-g', '-O0'])
+  else:
+      env.Append(CCFLAGS = ['-g', '-O3', '-flto'])
+! env.Append(CCFLAGS = ['-Werror', '-Wall', '-Wextra', '-fmax-errors=1', '-std=c++14', '-pthread'])
+  
+  env.Append(LIBPATH = ['.'])
+  # If we are doing a static build, the timeloop library must be the first
+  # item in the link order.
+  if GetOption('link_static'):
+!     env.Append(LIBS = ['timeloop-model'])
+  
+! env.Append(LINKFLAGS = ['-std=c++11', '-static-libgcc', '-static-libstdc++', '-pthread'])
+! env.Append(LIBS = ['config++', 'yaml-cpp', 'ncurses', 'tinfo'])
+  if GetOption('with_isl'):
+!     env.Append(LIBS = ['isl', 'barvinok', 'ntl', 'pthread', 'polylibgmp'])
+  
+  if GetOption('link_static'):
+      print("Using static linking.")
+***************
+*** 155,161 ****
+  model/network-simple-multicast.cpp
+  model/sparse-optimization-info.cpp
+  model/sparse-optimization-parser.cpp
+- model/util.cpp
+  util/banner.cpp
+  util/args.cpp
+  util/numeric.cpp
+--- 142,147 ----
+***************
+*** 196,202 ****
+  mapspaces/mapspace-factory.cpp
+  mapspaces/subspaces.cpp
+  mapspaces/uber.cpp
+- mapspaces/ruby.cpp
+  """)
+  
+  search_sources = Split("""
+--- 182,187 ----
+***************
+*** 218,224 ****
+  else:
+      lib_model_shared = libenv.SharedLibrary(target = 'timeloop-model', source = modellib_sources)
+      libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_model_shared ])
+! #libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_model_shared, lib_model_static ])
+  
+  if GetOption('link_static'):
+      lib_mapper_static = libenv.StaticLibrary(target = 'timeloop-mapper', source = mapperlib_sources)
+--- 203,209 ----
+  else:
+      lib_model_shared = libenv.SharedLibrary(target = 'timeloop-model', source = modellib_sources)
+      libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_model_shared ])
+! # libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_model_shared, lib_model_static ])
+  
+  if GetOption('link_static'):
+      lib_mapper_static = libenv.StaticLibrary(target = 'timeloop-mapper', source = mapperlib_sources)
+***************
+*** 226,236 ****
+  else:
+      lib_mapper_shared = libenv.SharedLibrary(target = 'timeloop-mapper', source = mapperlib_sources)
+      libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_mapper_shared ])
+  
+  # If we are doing a dynamic build, the timeloop library must be the last
+  # item in the link order.
+  if not GetOption('link_static'):
+!     env.Append(LIBS = ['timeloop-mapper'])
+  
+  # Build the various binaries.
+  
+--- 211,228 ----
+  else:
+      lib_mapper_shared = libenv.SharedLibrary(target = 'timeloop-mapper', source = mapperlib_sources)
+      libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_mapper_shared ])
++     
++ if GetOption('link_static'):
++     lib_mapper_topk_static = libenv.StaticLibrary(target = 'timeloop-mapper-topk', source = mapperlib_sources)
++     libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_mapper_topk_static ])
++ else:
++     lib_mapper_topk_shared = libenv.SharedLibrary(target = 'timeloop-mapper-topk', source = mapperlib_sources)
++     libenv.Install(env["BUILD_BASE_DIR"] + '/lib', [ lib_mapper_topk_shared ])
+  
+  # If we are doing a dynamic build, the timeloop library must be the last
+  # item in the link order.
+  if not GetOption('link_static'):
+!     env.Append(LIBS = ['timeloop-model'])
+  
+  # Build the various binaries.
+  
+***************
+*** 244,261 ****
+  applications/model/main.cpp
+  """)
+  
+! mapper_sources = Split("""
+  applications/mapper/mapper.cpp
+  applications/mapper/mapper-thread.cpp
+  applications/mapper/main.cpp
+  """)
+  
+! simple_mapper_sources = Split("""
+  applications/simple-mapper/simple-mapper.cpp
+  applications/simple-mapper/main.cpp
+  """)
+  
+! design_space_sources = Split("""
+  applications/mapper/mapper.cpp
+  applications/mapper/mapper-thread.cpp
+  applications/design-space/arch.cpp
+--- 236,259 ----
+  applications/model/main.cpp
+  """)
+  
+! mapper_sources = mapspace_sources + search_sources + Split("""
+  applications/mapper/mapper.cpp
+  applications/mapper/mapper-thread.cpp
+  applications/mapper/main.cpp
+  """)
+  
+! mapper_topk_sources = mapspace_sources + search_sources + Split("""
+! applications/mapper-topk/mapper-topk.cpp
+! applications/mapper-topk/mapper-thread-topk.cpp
+! applications/mapper-topk/main.cpp
+! """)
+! 
+! simple_mapper_sources = mapspace_sources + Split("""
+  applications/simple-mapper/simple-mapper.cpp
+  applications/simple-mapper/main.cpp
+  """)
+  
+! design_space_sources = mapspace_sources + search_sources + Split("""
+  applications/mapper/mapper.cpp
+  applications/mapper/mapper-thread.cpp
+  applications/design-space/arch.cpp
+***************
+*** 264,286 ****
+  applications/design-space/main.cpp
+  """)
+  
+- unit_tests_sources = Split("""
+- unit-tests/compound-config/test-compound-config.cpp
+- """)
+- 
+  bin_metrics = env.Program(target = 'timeloop-metrics', source = metrics_sources)
+  bin_model = env.Program(target = 'timeloop-model', source = model_sources)
+  bin_simple_mapper = env.Program(target = 'timeloop-simple-mapper', source = simple_mapper_sources)
+  bin_mapper = env.Program(target = 'timeloop-mapper', source = mapper_sources)
+  bin_design_space = env.Program(target = 'timeloop-design-space', source = design_space_sources)
+- bin_unit_tests = env.Program(target = 'timeloop-unit-tests', source = unit_tests_sources)
+  
+! env.Install(env["BUILD_BASE_DIR"] + '/bin', [ bin_metrics,
+!                                               bin_model,
+                                                bin_simple_mapper,
+                                                bin_mapper,
+!                                               bin_design_space,
+!                                               bin_unit_tests
+                                              ])
+  
+  #os.symlink(os.path.abspath('timeloop-mapper'), os.path.abspath('timeloop'))
+--- 262,280 ----
+  applications/design-space/main.cpp
+  """)
+  
+  bin_metrics = env.Program(target = 'timeloop-metrics', source = metrics_sources)
+  bin_model = env.Program(target = 'timeloop-model', source = model_sources)
+  bin_simple_mapper = env.Program(target = 'timeloop-simple-mapper', source = simple_mapper_sources)
+  bin_mapper = env.Program(target = 'timeloop-mapper', source = mapper_sources)
++ bin_mapper_topk = env.Program(target = 'timeloop-mapper-topk', source = mapper_topk_sources)
+  bin_design_space = env.Program(target = 'timeloop-design-space', source = design_space_sources)
+  
+! env.Install(env["BUILD_BASE_DIR"] + '/bin', [ bin_metrics, 
+!                                               bin_model, 
+                                                bin_simple_mapper,
+                                                bin_mapper,
+!                                               bin_mapper_topk,
+!                                               bin_design_space
+                                              ])
+  
+  #os.symlink(os.path.abspath('timeloop-mapper'), os.path.abspath('timeloop'))
