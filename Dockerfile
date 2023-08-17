@@ -29,6 +29,20 @@ RUN apt-get update \
     && make \
     && chmod -R 777 .
 
+
+# NeuroSim
+
+WORKDIR $BUILD_DIR
+COPY src/accelergy-neurosim-plug-in $BUILD_DIR/accelergy-neurosim-plug-in
+RUN cd accelergy-neurosim-plug-in \
+    && mkdir NeuroSim \
+    && cp -r DNN_NeuroSim_V1.3/Inference_pytorch/NeuroSIM/* ./NeuroSim/ \
+    && cp -rf drop_in/* ./NeuroSim/ \
+    && cd NeuroSim \
+    && make \
+    && chmod -R 777 .
+
+
 # Build and install timeloop
 
 WORKDIR $BUILD_DIR
@@ -50,8 +64,8 @@ RUN apt-get update \
     && cd ./timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd .. \
-    && scons --accelergy \
-    && scons --static --accelergy \
+    && scons --accelergy -j 16 \
+    && scons --static --accelergy -j 16 \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
     && cp build/timeloop-model   /usr/local/bin
@@ -93,25 +107,25 @@ ENV INCLUDE_DIR=/usr/local/include
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        curl \
-        git \
-        wget \
-        vim \
+               curl \
+               git \
+               wget \
+               vim \
     && apt-get install -y --no-install-recommends python3-dev \
     && apt-get install -y --no-install-recommends python3-pip \
     && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata \
     && apt-get install -y --no-install-recommends \
-       g++ \
-       libconfig++-dev \
-       libboost-dev \
-       libboost-iostreams-dev \
-       libboost-serialization-dev \
-       libyaml-cpp-dev \
-       libncurses5-dev \
-       libtinfo-dev \
-       libgpm-dev \
-       cmake \
-       ninja-build \
+               g++ \
+               libconfig++-dev \
+               libboost-dev \
+               libboost-iostreams-dev \
+               libboost-serialization-dev \
+               libyaml-cpp-dev \
+               libncurses5-dev \
+               libtinfo-dev \
+               libgpm-dev \
+               cmake \
+               ninja-build \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd workspace \
     && useradd -m -d /home/workspace -c "Workspace User Account" -s /usr/sbin/nologin -g workspace workspace \
@@ -161,23 +175,26 @@ WORKDIR $BUILD_DIR
 # Note source for accelergy was copied in above
 
 COPY --from=builder  $BUILD_DIR/cacti $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti
+RUN mkdir $BUILD_DIR/accelergy-neurosim-plug-in/NeuroSim
+COPY --from=builder  $BUILD_DIR/accelergy-neurosim-plug-in/NeuroSim/main $BUILD_DIR/accelergy-neurosim-plug-in/NeuroSim/main
+
+WORKDIR $BUILD_DIR
+
+# accelergy-neurosim-main $BUILD_DIR/accelergy-neurosim-main
 
 RUN python3 -m pip install setuptools \
     && python3 -m pip install wheel \
     && python3 -m pip install libconf \
     && python3 -m pip install numpy \
-    && cd accelergy \
-    && python3 -m pip install . \
-    && cd .. \
-    && cd accelergy-aladdin-plug-in \
-    && python3 -m pip install . \
-    && cd .. \
-    && cd accelergy-cacti-plug-in \
-    && python3 -m pip install . \
-    && chmod 777 $SHARE_DIR/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/cacti \
-    && cd .. \
-    && cd accelergy-table-based-plug-ins \
-    && python3 -m pip install .
+    && python3 -m pip install ./accelergy \
+    && python3 -m pip install ./accelergy-aladdin-plug-in \
+    && python3 -m pip install ./accelergy-cacti-plug-in \
+    && python3 -m pip install ./accelergy-table-based-plug-ins \
+    && python3 -m pip install ./accelergy-neurosim-plug-in \
+    && python3 -m pip install ./accelergy-library-plug-in \
+    && python3 -m pip install ./accelergy-adc-plug-in \
+    && chmod -R 777 $SHARE_DIR/accelergy/estimation_plug_ins
+
 
 # PyTimeloop
 
@@ -195,9 +212,6 @@ RUN apt-get update \
     && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop/include \
        TIMELOOP_LIB_PATH=$LIB_DIR \
        python3 -m pip install .
-
-# Ruamel yaml
-RUN pip3 install ruamel.yaml
 
 
 # Set up entrypoint
