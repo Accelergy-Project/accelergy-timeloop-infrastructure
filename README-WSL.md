@@ -20,24 +20,22 @@ Build procedure
 
 ```
     git clone --recurse-submodules https://github.com/Accelergy-Project/accelergy-timeloop-infrastructure.git
+    cd accelergy-timeloop-infrastructure
 
-    cd src/cacti
-    make
+    cd src/cacti ; make ; cd ..
+    cd accelergy-neurosim-plug-in ; make ; cd ..
+    pip3 install ./accelergy
+    pip3 install ./accelergy-aladdin-plug-in
+    pip3 install ./accelergy-cacti-plug-in
+    pip3 install ./accelergy-table-based-plug-ins
+    pip3 install ./accelergy-neurosim-plug-in
+    pip3 install ./accelergy-library-plug-in
+    pip3 install ./accelergy-adc-plug-in
+    cp -r ./cacti ~/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/
 
-    cd ../accelergy
-    pip3 install .
-    cd ../accelergy-aladdin-plug-in/
-    pip3 install .
-    cd ../accelergy-cacti-plug-in/
-    pip3 install .
-    cp -r ../cacti ~/.local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/
-    cd ../accelergy-table-based-plug-in/
-    pip3 install .
-
-    cd ../timeloop
-    cd src/
-    ln -s ../pat-public/src/pat .
-    scons --accelergy --static
+    cd timeloop
+    ln -s "$(pwd)/pat-public/src/pat" ./src
+    scons --accelergy --static -j 16
     cp build/timeloop-* ~/.local/bin
 ```
 

@@ -1,4 +1,4 @@
-version: 0.3
+version: 0.4
 compound_components: []
 estimator_plug_ins:
   - /usr/local/share/accelergy/estimation_plug_ins

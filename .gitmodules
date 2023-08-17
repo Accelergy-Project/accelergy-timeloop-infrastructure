@@ -13,12 +13,22 @@
 [submodule "src/cacti"]
 	path = src/cacti
 	url = https://github.com/HewlettPackard/cacti.git
-[submodule "src/src/timeloop"]
-	path = src/src/timeloop
-	url = https://github.com/NVlabs/timeloop.git
 [submodule "src/timeloop"]
 	path = src/timeloop
 	url = https://github.com/NVlabs/timeloop.git
 [submodule "src/timeloop-python"]
 	path = src/timeloop-python
 	url = https://github.com/Accelergy-Project/timeloop-python.git
+	branch = main
+[submodule "src/accelergy-library-plug-in"]
+	path = src/accelergy-library-plug-in
+	url = https://github.com/Accelergy-Project/accelergy-library-plug-in.git
+	branch = main
+[submodule "src/accelergy-neurosim-plug-in"]
+	path = src/accelergy-neurosim-plug-in
+	url = https://github.com/Accelergy-Project/accelergy-neurosim-plug-in.git
+	branch = main
+[submodule "src/accelergy-adc-plug-in"]
+	path = src/accelergy-adc-plug-in
+	url = https://github.com/Accelergy-Project/accelergy-adc-plug-in.git
+	branch = main
