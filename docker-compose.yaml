@@ -28,7 +28,7 @@ version: '3'
 services:
   infrastructure:
     hostname: accelergy-timeloop
-    image: timeloopaccelergy/accelergy-timeloop-infrastructure:latest-${DOCKER_ARCH}
+    image: timeloopaccelergy/accelergy-timeloop-infrastructure:raella-pim-${DOCKER_ARCH}
     volumes:
       - ./workspace:/home/workspace
     environment:

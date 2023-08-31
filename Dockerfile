@@ -48,8 +48,11 @@ RUN cd accelergy-neurosim-plug-in \
 WORKDIR $BUILD_DIR
 
 COPY src/timeloop $BUILD_DIR/timeloop
+COPY src/timeloopfe/update_timeloop_inputs.py $BUILD_DIR/timeloop
 
 RUN apt-get update \
+    && apt-get install -y --no-install-recommends python3-dev \
+    && apt-get install -y --no-install-recommends python3-pip \
     && apt-get install -y --no-install-recommends \
                g++ \
                libconfig++-dev \
@@ -61,14 +64,17 @@ RUN apt-get update \
                libtinfo-dev \
                libgpm-dev \
     && rm -rf /var/lib/apt/lists/* \
-    && cd ./timeloop/src \
+    && cd timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd .. \
     && scons --accelergy -j 16 \
     && scons --static --accelergy -j 16 \
-    && cp build/timeloop-mapper  /usr/local/bin \
-    && cp build/timeloop-metrics /usr/local/bin \
-    && cp build/timeloop-model   /usr/local/bin
+    && echo "YES" | python3 update_timeloop_inputs.py \
+    && scons --accelergy -j 16 \
+    && scons --static --accelergy -j 16 \
+    && cp build/timeloop*  /usr/local/bin
+
+COPY src/timeloop $BUILD_DIR/timeloop
 
 WORKDIR $BUILD_DIR
 
@@ -135,9 +141,12 @@ RUN apt-get update \
 
 WORKDIR $BUILD_DIR
 
-COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper  $BIN_DIR
+COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper $BIN_DIR
+COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-model $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-metrics $BIN_DIR
-COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-model   $BIN_DIR
+COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop_mapper $BIN_DIR
+COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop_model $BIN_DIR
+COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop_metrics $BIN_DIR
 COPY --from=builder  $BUILD_DIR/cacti/cacti $BIN_DIR
 
 # Get libraries and includes
@@ -214,6 +223,9 @@ RUN apt-get update \
        python3 -m pip install .
 
 
+WORKDIR $BUILD_DIR
+RUN cd timeloopfe && python3 -m pip install . 
+
 # Set up entrypoint
 
 COPY docker-entrypoint.sh $BIN_DIR
@@ -221,4 +233,3 @@ ENTRYPOINT ["bash", "docker-entrypoint.sh"]
 
 WORKDIR /home/workspace
 CMD ["bash"]
-
