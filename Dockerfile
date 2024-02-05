@@ -130,8 +130,8 @@ RUN apt-get update \
     && cd ./timeloop/src \
     && ln -s ../pat-public/src/pat . \
     && cd .. \
-    && scons --accelergy -j 16 \
-    && scons --static --accelergy -j 16 \
+    && scons --accelergy -j 4 \
+    && scons --static --accelergy -j 4 \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
     && cp build/timeloop-model   /usr/local/bin
