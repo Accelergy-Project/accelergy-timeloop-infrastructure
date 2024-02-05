@@ -32,3 +32,6 @@
 	path = src/accelergy-adc-plug-in
 	url = https://github.com/Accelergy-Project/accelergy-adc-plug-in.git
 	branch = main
+[submodule "src/timeloopfe"]
+	path = src/timeloopfe
+	url = https://github.com/Accelergy-Project/timeloopfe.git
