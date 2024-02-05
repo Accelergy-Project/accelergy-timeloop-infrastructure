@@ -36,12 +36,18 @@ all:	build
 # Pull all submodules
 
 pull:
-	git submodule update --remote --merge && \
+	# Only update top-level submodules
+	GIT_MAX_RECURSION=1 git submodule update --remote --merge --recursive
+
 	cp cacti.patch ./src/cacti/ && \
 	cd ./src/cacti/ && \
 	git reset --hard && \
-	git apply cacti.patch && \
-	cd ../../
+	git apply cacti.patch
+
+	cp cacti.patch ./src/accelergy-cacti-plug-in/cacti/ &&  \
+	cd ./src/accelergy-cacti-plug-in/cacti/ && \
+	git reset --hard && \
+	git apply cacti.patch
 
 # Build and tag docker image
 build-amd64:

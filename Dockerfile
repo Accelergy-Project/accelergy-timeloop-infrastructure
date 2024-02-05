@@ -31,7 +31,6 @@ RUN apt-get update \
 
 
 # NeuroSim
-
 WORKDIR $BUILD_DIR
 COPY src/accelergy-neurosim-plug-in $BUILD_DIR/accelergy-neurosim-plug-in
 RUN cd accelergy-neurosim-plug-in \
@@ -41,7 +40,6 @@ RUN cd accelergy-neurosim-plug-in \
     && cd NeuroSim \
     && make \
     && chmod -R 777 .
-
 
 # Build and install timeloop
 
@@ -93,7 +91,6 @@ RUN wget https://libntl.org/ntl-$NTL_VER.tar.gz \
     && make \
     && make install
 
-
 WORKDIR $BUILD_DIR
 RUN wget https://barvinok.sourceforge.io/barvinok-$BARVINOK_VER.tar.gz \
     && tar -xvzf barvinok-$BARVINOK_VER.tar.gz \
@@ -138,19 +135,6 @@ RUN apt-get update \
     && cp build/timeloop-mapper  /usr/local/bin \
     && cp build/timeloop-metrics /usr/local/bin \
     && cp build/timeloop-model   /usr/local/bin
-
-COPY src/timeloop $BUILD_DIR/timeloop_timeloopfe
-COPY src/timeloopfe/update_timeloop_inputs.py $BUILD_DIR/timeloop_timeloopfe
-RUN cd $BUILD_DIR/timeloop_timeloopfe \
-    && echo "YES" | python3 update_timeloop_inputs.py \
-    && cd src \
-    && ln -s ../pat-public/src/pat . \
-    && cd .. \
-    && scons --accelergy -j 16 \
-    && scons --static --accelergy -j 16 \
-    && cp build/timeloop_mapper  /usr/local/bin \
-    && cp build/timeloop_metrics /usr/local/bin \
-    && cp build/timeloop_model   /usr/local/bin
 
 WORKDIR $BUILD_DIR
 
@@ -220,9 +204,6 @@ WORKDIR $BUILD_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-mapper  $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-metrics $BIN_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/build/timeloop-model   $BIN_DIR
-COPY --from=builder  $BUILD_DIR/timeloop_timeloopfe/build/timeloop_mapper  $BIN_DIR
-COPY --from=builder  $BUILD_DIR/timeloop_timeloopfe/build/timeloop_metrics $BIN_DIR
-COPY --from=builder  $BUILD_DIR/timeloop_timeloopfe/build/timeloop_model   $BIN_DIR
 
 COPY --from=builder  $BUILD_DIR/cacti/cacti $BIN_DIR
 
@@ -233,15 +214,34 @@ WORKDIR $BUILD_DIR
 COPY --from=builder  $BUILD_DIR/timeloop/lib/*.a   $LIB_DIR/
 COPY --from=builder  $BUILD_DIR/timeloop/lib/*.so  $LIB_DIR/
 COPY --from=builder  $BUILD_DIR/timeloop/include/* $INCLUDE_DIR/timeloop/
-COPY --from=builder  $BUILD_DIR/timeloop_timeloopfe/lib/*.a   $LIB_DIR/
-COPY --from=builder  $BUILD_DIR/timeloop_timeloopfe/lib/*.so  $LIB_DIR/
-COPY --from=builder  $BUILD_DIR/timeloop_timeloopfe/include/* $INCLUDE_DIR/timeloop_timeloopfe/
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata \
+    && apt-get install -y --no-install-recommends \
+                       locales \
+                       curl \
+                       git \
+                       wget \
+                       python3-dev \
+                       python3-pip \
+                       scons \
+                       make \
+                       autotools-dev \
+                       autoconf \
+                       automake \
+                       libtool \
+    && apt-get install -y --no-install-recommends \
+                       g++ \
+                       cmake
 
 # Get all source
 
 WORKDIR $BUILD_DIR
 
 COPY src/ $BUILD_DIR/
+
+WORKDIR $BUILD_DIR
+RUN echo "YES" | python3 $BUILD_DIR/timeloop/scripts/hyphens2underscores.py $BUILD_DIR/timeloop-python
 
 #WORKDIR $BUILD_DIR
 #RUN apt-get update \
@@ -262,8 +262,6 @@ COPY --from=builder $BUILD_DIR/timeloop/docs $BUILD_DIR/timeloop
 WORKDIR $BUILD_DIR
 
 # Note source for accelergy was copied in above
-RUN mkdir $BUILD_DIR/accelergy-cacti-plug-in/cacti
-COPY --from=builder  $BUILD_DIR/cacti/cacti $BUILD_DIR/accelergy-cacti-plug-in/cacti/cacti
 RUN mkdir $BUILD_DIR/accelergy-neurosim-plug-in/NeuroSim
 COPY --from=builder  $BUILD_DIR/accelergy-neurosim-plug-in/NeuroSim/main $BUILD_DIR/accelergy-neurosim-plug-in/NeuroSim/main
 
@@ -277,6 +275,7 @@ RUN python3 -m pip install setuptools \
     && python3 -m pip install numpy \
     && python3 -m pip install ./accelergy \
     && python3 -m pip install ./accelergy-aladdin-plug-in \
+    && cd accelergy-cacti-plug-in && make && cd .. \
     && python3 -m pip install ./accelergy-cacti-plug-in \
     && python3 -m pip install ./accelergy-table-based-plug-ins \
     && python3 -m pip install ./accelergy-neurosim-plug-in \
@@ -286,6 +285,39 @@ RUN python3 -m pip install setuptools \
 
 
 # PyTimeloop
+
+ENV BARVINOK_VER=0.41.6
+ENV NTL_VER=11.5.1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+                       g++ \
+                       libconfig++-dev \
+                       libboost-dev \
+                       libboost-iostreams-dev \
+                       libboost-serialization-dev \
+                       libyaml-cpp-dev \
+                       libncurses5-dev \
+                       libtinfo-dev \
+                       libgpm-dev \
+                       libgmp-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR $BUILD_DIR
+RUN wget https://libntl.org/ntl-$NTL_VER.tar.gz \
+    && tar -xvzf ntl-$NTL_VER.tar.gz \
+    && cd ntl-$NTL_VER/src \
+    && ./configure NTL_GMP_LIP=on SHARED=on \
+    && make \
+    && make install
+
+WORKDIR $BUILD_DIR
+RUN wget https://barvinok.sourceforge.io/barvinok-$BARVINOK_VER.tar.gz \
+    && tar -xvzf barvinok-$BARVINOK_VER.tar.gz \
+    && cd barvinok-$BARVINOK_VER \
+    && ./configure --enable-shared-barvinok \
+    && make \
+    && make install
 
 WORKDIR $BUILD_DIR
 
@@ -304,31 +336,6 @@ RUN apt-get update \
        TIMELOOP_LIB_PATH=$LIB_DIR \
        python3 -m pip install .
 
-WORKDIR $BUILD_DIR
-COPY src/timeloop-python $BUILD_DIR/timeloop-python-timeloopfe
-COPY src/timeloopfe/update_timeloop_inputs.py $BUILD_DIR/timeloop-python-timeloopfe
-COPY src/timeloop $BUILD_DIR/timeloop_timeloopfe
-
-COPY src/timeloopfe/update_timeloop_inputs.py $BUILD_DIR/timeloop_timeloopfe
-RUN cd $BUILD_DIR/timeloop_timeloopfe && echo "YES" | python3 update_timeloop_inputs.py
-
-WORKDIR $BUILD_DIR
-RUN cd timeloop-python-timeloopfe \
-    && echo "YES" | python3 update_timeloop_inputs.py \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-               g++ \
-               cmake \
-               make \
-    && cd ../timeloop_timeloopfe/src \
-    && ln -s ../pat-public/src/pat . \
-    && cd ../../timeloop-python-timeloopfe \
-    && rm -rf build \
-    && apt-get install -y --no-install-recommends \
-               libisl-dev \
-    && TIMELOOP_INCLUDE_PATH=$BUILD_DIR/timeloop_timeloopfe/include \
-       TIMELOOP_LIB_PATH=$LIB_DIR \
-       python3 -m pip install .
 
 # timeloopfe
 WORKDIR $BUILD_DIR
