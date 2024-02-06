@@ -103,3 +103,8 @@ lint:
 login:
 	"${DOCKER_EXE}" login --username ${DOCKER_NAME} --password ${DOCKER_PASS}
 
+install_accelergy:
+	python3 -m pip install setuptools wheel libconf numpy joblib
+	cd src/accelergy-cacti-plug-in && make
+	cd src/accelergy-neurosim-plug-in && make
+	cd src && pip3 install ./accelergy*
