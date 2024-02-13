@@ -87,7 +87,7 @@ WORKDIR $BUILD_DIR
 RUN wget https://libntl.org/ntl-$NTL_VER.tar.gz \
     && tar -xvzf ntl-$NTL_VER.tar.gz \
     && cd ntl-$NTL_VER/src \
-    && ./configure NTL_GMP_LIP=on SHARED=on \
+    && ./configure NTL_GMP_LIP=on SHARED=on NATIVE=off \
     && make \
     && make install
 
@@ -307,7 +307,7 @@ WORKDIR $BUILD_DIR
 RUN wget https://libntl.org/ntl-$NTL_VER.tar.gz \
     && tar -xvzf ntl-$NTL_VER.tar.gz \
     && cd ntl-$NTL_VER/src \
-    && ./configure NTL_GMP_LIP=on SHARED=on \
+    && ./configure NTL_GMP_LIP=on SHARED=on NATIVE=off \
     && make \
     && make install
 
