@@ -166,3 +166,6 @@ install_timeloop:
 	cd src/timeloop \
 		&& cp -r pat-public/src/pat src/pat  \
 		&& scons -j4 --with-isl --static --accelergy
+	cp src/timeloop/build/timeloop-mapper  ~/.local/bin/timeloop-mapper
+	cp src/timeloop/build/timeloop-metrics ~/.local/bin/timeloop-metrics
+	cp src/timeloop/build/timeloop-model ~/.local/bin/timeloop-model
