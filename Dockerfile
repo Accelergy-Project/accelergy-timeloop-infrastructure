@@ -230,6 +230,7 @@ RUN apt-get update \
                        autoconf \
                        automake \
                        libtool \
+                       graphviz \
     && apt-get install -y --no-install-recommends \
                        g++ \
                        cmake
@@ -273,6 +274,7 @@ RUN python3 -m pip install setuptools \
     && python3 -m pip install wheel \
     && python3 -m pip install libconf \
     && python3 -m pip install numpy \
+    && python3 -m pip install pydot \
     && python3 -m pip install ./accelergy \
     && python3 -m pip install ./accelergy-aladdin-plug-in \
     && cd accelergy-cacti-plug-in && make && cd .. \
