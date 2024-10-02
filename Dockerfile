@@ -322,7 +322,13 @@ RUN wget https://barvinok.sourceforge.io/barvinok-$BARVINOK_VER.tar.gz \
     && make install
 
 WORKDIR $BUILD_DIR
+RUN wget -O islpy-2024.2.tar.gz https://github.com/inducer/islpy/archive/refs/tags/v2024.2.tar.gz \
+    && tar -xvzf islpy-2024.2.tar.gz \
+    && cd islpy-2024.2 \
+    && sed -i 's/python/python3/g' build-with-barvinok.sh \
+    && ./build-with-barvinok.sh /usr/local
 
+WORKDIR $BUILD_DIR
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
                g++ \
@@ -338,10 +344,6 @@ RUN apt-get update \
        TIMELOOP_LIB_PATH=$LIB_DIR \
        python3 -m pip install .
 
-
-# timeloopfe
-WORKDIR $BUILD_DIR
-RUN python3 -m pip install setuptools ./timeloopfe
 
 # Set up entrypoint
 
