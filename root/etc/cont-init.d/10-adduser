@@ -1,0 +1,47 @@
+#!/usr/bin/with-contenv bash
+
+USER_UID=${USER_UID:-911}
+USER_GID=${USER_GID:-911}
+
+groupmod -o -g "$USER_GID" workspace
+usermod -o -u "$USER_UID" workspace
+
+# Copy in default .profile if not already there
+if [ ! -e /home/workspace/.profile ]
+then
+    cp /usr/local/src/dot.profile /home/workspace/.profile
+    chown $USER_UID:$USER_GID /home/workspace/.profile
+fi
+
+# Copy in default bashrc if not already there
+if [ ! -e /home/workspace/.bashrc ]
+then
+    cp /usr/local/src/dot.bashrc /home/workspace/.bashrc
+    chown $USER_UID:$USER_GID /home/workspace/.bashrc
+fi
+
+# Set default accelergy config file if there is no existing one
+if [ ! -e /home/workspace/.config/accelergy/accelergy_config.yaml ]
+then
+    # create necessary directories
+    if [ ! -e /home/workspace/.config ]
+    then
+        mkdir /home/workspace/.config
+    fi
+    # create necessary directories
+    if [ ! -e /home/workspace/.config/accelergy ]
+    then
+        mkdir /home/workspace/.config/accelergy
+    fi
+    # infrastructure docker should already have the default config file ready in /usr/local/src
+    cp /usr/local/src/accelergy_default_config.yaml /home/workspace/.config/accelergy/accelergy_config.yaml
+    chown -R $USER_UID:$USER_GID /home/workspace/.config
+fi
+
+echo "
+-------------------------------------
+User uid:    $(id -u workspace)
+User gid:    $(id -g workspace)
+-------------------------------------
+"
+chown -R workspace:workspace /home/workspace

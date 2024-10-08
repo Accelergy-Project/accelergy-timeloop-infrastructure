@@ -1,4 +1,4 @@
-FROM ubuntu:20.04 AS builder
+FROM ubuntu:22.04 AS builder
 
 ENV BUILD_DIR=/usr/local/src
 
@@ -8,7 +8,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends git \
     && apt-get install -y --no-install-recommends scons \
     && apt-get install -y --no-install-recommends make \
-    && apt-get install -y --no-install-recommends python3.8 \
+    && apt-get install -y --no-install-recommends python3 \
     && apt-get install -y --no-install-recommends python3-pip \
     && apt-get install -y --no-install-recommends doxygen \
     && rm -rf /var/lib/apt/lists/* \
@@ -144,7 +144,7 @@ RUN cd ./timeloop \
 #
 # Main image
 #
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 LABEL maintainer="timeloop-accelergy@mit.edu"
 
@@ -235,6 +235,25 @@ RUN apt-get update \
                        g++ \
                        cmake
 
+
+#
+# Set version for s6 overlay
+#
+ARG OVERLAY_VERSION="v2.1.0.2"
+ARG OVERLAY_ARCH="amd64"
+
+ADD https://github.com/just-containers/s6-overlay/releases/download/${OVERLAY_VERSION}/s6-overlay-${OVERLAY_ARCH}-installer /tmp/
+
+RUN chmod +x /tmp/s6-overlay-${OVERLAY_ARCH}-installer && \
+    /tmp/s6-overlay-${OVERLAY_ARCH}-installer / && \
+    rm /tmp/s6-overlay-${OVERLAY_ARCH}-installer
+
+RUN echo "**** create container user and make folders ****" && \
+    userdel workspace && \
+    useradd -u 911 -U -d /home/workspace -s /bin/bash workspace && \
+    usermod -G users workspace
+
+
 # Get all source
 
 WORKDIR $BUILD_DIR
@@ -275,6 +294,7 @@ RUN python3 -m pip install setuptools \
     && python3 -m pip install libconf \
     && python3 -m pip install numpy \
     && python3 -m pip install pydot \
+    && python3 -m pip install jupyterlab \
     && python3 -m pip install ./accelergy \
     && python3 -m pip install ./accelergy-aladdin-plug-in \
     && cd accelergy-cacti-plug-in && make && cd .. \
@@ -345,10 +365,17 @@ RUN apt-get update \
        python3 -m pip install .
 
 
+#
+# Set up root
+#
+COPY /root /
+
+USER $NB_USER
+WORKDIR /home/workspace/
+
+
 # Set up entrypoint
 
-COPY docker-entrypoint.sh $BIN_DIR
-ENTRYPOINT ["bash", "docker-entrypoint.sh"]
+EXPOSE 8888
 
-WORKDIR /home/workspace
-CMD ["bash"]
+ENTRYPOINT ["/init"]
