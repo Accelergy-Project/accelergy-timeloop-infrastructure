@@ -139,8 +139,11 @@ install_timeloop:
 						g++ \
 						libconfig++-dev \
 						libboost-dev \
+						libboost-filesystem-dev \
 						libboost-iostreams-dev \
+						libboost-log-dev \
 						libboost-serialization-dev \
+						libboost-thread-dev \
 						libyaml-cpp-dev \
 						libncurses5-dev \
 						libtinfo-dev \
@@ -152,7 +155,7 @@ install_timeloop:
 		&& tar -xvzf ntl-${NTL_VER}.tar.gz \
 		&& cd ntl-${NTL_VER}/src \
 		&& ./configure NTL_GMP_LIP=on SHARED=on \
-		&& make \
+		&& make -j8 \
 		&& sudo make install
 
 	cd /tmp/build-timeloop \
@@ -160,12 +163,14 @@ install_timeloop:
 		&& tar -xvzf barvinok-${BARVINOK_VER}.tar.gz \
 		&& cd barvinok-${BARVINOK_VER} \
 		&& ./configure --enable-shared-barvinok \
-		&& make \
+		&& make -j8 \
 		&& sudo make install
 
 	cd src/timeloop \
 		&& cp -r pat-public/src/pat src/pat  \
-		&& scons -j4 --with-isl --static --accelergy
+		&& scons -j8 --with-isl --static --accelergy \
+		&& scons -j8 --with-isl --accelergy
+
 	cp src/timeloop/build/timeloop-mapper  ~/.local/bin/timeloop-mapper
 	cp src/timeloop/build/timeloop-metrics ~/.local/bin/timeloop-metrics
 	cp src/timeloop/build/timeloop-model ~/.local/bin/timeloop-model
