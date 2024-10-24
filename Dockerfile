@@ -47,7 +47,7 @@ WORKDIR $BUILD_DIR
 
 COPY src/timeloop $BUILD_DIR/timeloop
 
-ENV BARVINOK_VER=0.41.6
+ENV BARVINOK_VER=0.41.8
 ENV NTL_VER=11.5.1
 
 RUN apt-get update \
