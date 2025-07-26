@@ -349,6 +349,15 @@ RUN wget -O islpy-2024.2.tar.gz https://github.com/inducer/islpy/archive/refs/ta
     && ./build-with-barvinok.sh /usr/local
 
 WORKDIR $BUILD_DIR
+
+# Fix cmake issue and the pat issue
+RUN \
+    cd timeloop-python \
+    && grep -Rl 'cmake_minimum_required' . \
+    | xargs sed -i 's/cmake_minimum_required[[:space:]]*(VERSION[[:space:]]*[0-9.]\+)/cmake_minimum_required(VERSION 3.5)/' \
+    && rm -rf /usr/local/src/timeloop/include/pat \
+    && cp -r /usr/local/src/timeloop/pat-public/src/pat /usr/local/src/timeloop/include/
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
                g++ \
